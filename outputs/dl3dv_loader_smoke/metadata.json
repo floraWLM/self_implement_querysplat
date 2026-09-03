@@ -15,6 +15,39 @@
   "images_all_dtype": "torch.float32",
   "images_all_min": 0.0,
   "images_all_max": 1.0,
+  "input_raw_shape": [
+    4,
+    3,
+    512,
+    512
+  ],
+  "input_raw_range": [
+    0.0,
+    0.9999406337738037
+  ],
+  "input_normalized_shape": [
+    4,
+    3,
+    512,
+    512
+  ],
+  "input_normalized_range": [
+    -2.1179039478302,
+    2.635699987411499
+  ],
+  "supervision_images_shape": [
+    4,
+    3,
+    512,
+    512
+  ],
+  "supervision_images_range": [
+    0.0,
+    1.0
+  ],
+  "matches_provider_images_input": true,
+  "matches_provider_normalized_rgb": true,
+  "matches_provider_images_output": true,
   "sample_keys": [
     "cam_to_world_input",
     "cam_view",

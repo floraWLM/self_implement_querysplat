@@ -16,6 +16,7 @@ from PIL import Image
 from torchvision.utils import make_grid
 
 from tokengs.data.provider import Provider
+from tokengs.data.querysplat_images import split_querysplat_images
 from tokengs.options import Options
 
 
@@ -101,13 +102,37 @@ def main() -> None:
             f"images_all must be in [0, 1], observed [{image_min}, {image_max}]"
         )
 
+    querysplat_images = split_querysplat_images(
+        images_all,
+        num_input_views=args.num_input_views,
+    )
+    torch.testing.assert_close(querysplat_images.input_raw, sample["images_input"])
+    torch.testing.assert_close(
+        querysplat_images.input_normalized,
+        sample["input"][: args.num_input_views, :3],
+    )
+    torch.testing.assert_close(
+        querysplat_images.supervision_images,
+        sample["images_output"],
+    )
+
     scene_path = Path(provider.dataset.sample_list[args.scene_index]).resolve()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     tensor_path = args.output_dir / "images_all.pt"
     grid_path = args.output_dir / "images_all_grid.png"
+    input_raw_path = args.output_dir / "input_raw.pt"
+    input_normalized_path = args.output_dir / "input_normalized.pt"
+    supervision_path = args.output_dir / "supervision_images.pt"
+    input_grid_path = args.output_dir / "input_raw_grid.png"
+    supervision_grid_path = args.output_dir / "supervision_images_grid.png"
     metadata_path = args.output_dir / "metadata.json"
     torch.save(images_all, tensor_path)
+    torch.save(querysplat_images.input_raw, input_raw_path)
+    torch.save(querysplat_images.input_normalized, input_normalized_path)
+    torch.save(querysplat_images.supervision_images, supervision_path)
     save_grid(images_all, grid_path)
+    save_grid(querysplat_images.input_raw, input_grid_path)
+    save_grid(querysplat_images.supervision_images, supervision_grid_path)
 
     metadata = {
         "data_root": str(data_root),
@@ -121,6 +146,24 @@ def main() -> None:
         "images_all_dtype": str(images_all.dtype),
         "images_all_min": image_min,
         "images_all_max": image_max,
+        "input_raw_shape": list(querysplat_images.input_raw.shape),
+        "input_raw_range": [
+            float(querysplat_images.input_raw.min()),
+            float(querysplat_images.input_raw.max()),
+        ],
+        "input_normalized_shape": list(querysplat_images.input_normalized.shape),
+        "input_normalized_range": [
+            float(querysplat_images.input_normalized.min()),
+            float(querysplat_images.input_normalized.max()),
+        ],
+        "supervision_images_shape": list(querysplat_images.supervision_images.shape),
+        "supervision_images_range": [
+            float(querysplat_images.supervision_images.min()),
+            float(querysplat_images.supervision_images.max()),
+        ],
+        "matches_provider_images_input": True,
+        "matches_provider_normalized_rgb": True,
+        "matches_provider_images_output": True,
         "sample_keys": sorted(sample),
     }
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
