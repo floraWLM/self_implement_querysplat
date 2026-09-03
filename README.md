@@ -1,5 +1,5 @@
-### Implmentation steps
-## Step 1 先用 TokenGS DL3DV loader 取出一个 scene 的 images_all
+## Implmentation steps
+### Step 1 先用 TokenGS DL3DV loader 取出一个 scene 的 images_all
 We train exclusively on DL3DV (Ling et al. 2024) using 512 × 512 center-cropped
 images.
 
@@ -23,7 +23,7 @@ conda run -n tokengs python scripts/inspect_dl3dv_scene.py \
   --image-size 512 \
   --output-dir ../outputs/dl3dv_loader_smoke
 ```
-## Step 2 固定 DL3DV sample 现在被明确拆成三个 QuerySplat 数据接口
+### Step 2 固定 DL3DV sample 现在被明确拆成三个 QuerySplat 数据接口
 images_all [8,3,512,512]
 ├── input_raw             [4,3,512,512]
 ├── input_normalized      [4,3,512,512]
@@ -56,7 +56,7 @@ def build_model_input(images: torch.Tensor, decoder: ModelInputDecoder | None = 
         decoder = ModelInputDecoder(cam_view=torch.empty(0), intrinsics=torch.empty(0))
     return ModelInput(encoder=encoder, decoder=decoder)
 ```
-## Step 3 接入官方 QuerySplat/VGGT，并建立 input-only VGM pass
+### Step 3 接入官方 QuerySplat/VGGT，并建立 input-only VGM pass
 
 直接复用官方 QuerySplat 的 `scripts/models`、`options.py`、`rendering`、`utils` 和 `third_party/vggt_omega`，避免重新实现导致 forward 逻辑、参数名或 checkpoint key 不一致。VGGT 权重放在 `TokenGS/checkpoints/vggt_omega_1b_512.pt`。
 
@@ -72,4 +72,20 @@ conda run -n querysplat python -m scripts.inspect_vggt_input_pass \
   --device cuda
 ```
 
-## Step 4
+### Step 4 Self-Calibrated Coordinate System - Sim(3)
+
+对同一 scene 独立运行两次 frozen VGM：input-only pass 提供 `Fgeo` 并定义重建坐标系；all-view pass 只公开 cameras/intrinsics，不向重建分支传递 target-view features。使用两次 pass 中共同的 input cameras 估计 `all-view -> input-only` Sim(3)，再将 supervision cameras 对齐到 `Fgeo` 和 Gaussian 所在坐标系。
+
+```bash
+cd /fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS
+conda run -n querysplat python -m scripts.inspect_self_calibration \
+  --images-all ../outputs/dl3dv_loader_smoke/images_all.pt \
+  --num-input-views 4 \
+  --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
+  --checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --output-dir ../outputs/self_calibration_smoke \
+  --device cuda
+```
+
+
+
