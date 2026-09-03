@@ -1,0 +1,146 @@
+{
+  "input_tensor": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/outputs/dl3dv_loader_smoke/input_raw.pt",
+  "config": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS/checkpoints/querysplat_vggto_1B_512_8192.yaml",
+  "checkpoint": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS/checkpoints/vggt_omega_1b_512.pt",
+  "device": "cuda",
+  "input_shape": [
+    1,
+    4,
+    3,
+    512,
+    512
+  ],
+  "aggregator_forward_count": 1,
+  "tokens_per_view": 1041,
+  "special_tokens_per_view": 17,
+  "camera_inverse_max_error": 1.1920928955078125e-07,
+  "frozen_vggt_parameter_count": 1143814185,
+  "trainable_adapter_parameter_count": 2112516,
+  "products": {
+    "geometry_tokens": {
+      "shape": [
+        1,
+        4164,
+        2048
+      ],
+      "dtype": "torch.float32",
+      "min": -35.89081573486328,
+      "median": 0.013711147010326385,
+      "max": 31.450313568115234,
+      "all_finite": true
+    },
+    "eye_token": {
+      "shape": [
+        1,
+        2048
+      ],
+      "dtype": "torch.float32",
+      "min": -0.03182760253548622,
+      "median": 0.00026228962815366685,
+      "max": 0.03390568122267723,
+      "all_finite": true
+    },
+    "layer_weights": {
+      "shape": [
+        1,
+        4
+      ],
+      "dtype": "torch.float32",
+      "min": 0.22468626499176025,
+      "median": 0.22930094599723816,
+      "max": 0.275051474571228,
+      "all_finite": true
+    },
+    "camera_tokens": {
+      "shape": [
+        1,
+        4,
+        1,
+        2048
+      ],
+      "dtype": "torch.float32",
+      "min": -32.388816833496094,
+      "median": 0.032539982348680496,
+      "max": 4.43765115737915,
+      "all_finite": true
+    },
+    "scene_tokens": {
+      "shape": [
+        1,
+        4,
+        16,
+        2048
+      ],
+      "dtype": "torch.float32",
+      "min": -32.6124267578125,
+      "median": 0.03114318661391735,
+      "max": 6.064809322357178,
+      "all_finite": true
+    },
+    "cam_view": {
+      "shape": [
+        1,
+        4,
+        4,
+        4
+      ],
+      "dtype": "torch.float32",
+      "min": -0.04186747223138809,
+      "median": 4.903040826320648e-05,
+      "max": 1.0,
+      "all_finite": true
+    },
+    "intrinsics": {
+      "shape": [
+        1,
+        4,
+        4
+      ],
+      "dtype": "torch.float32",
+      "min": 256.0,
+      "median": 256.0,
+      "max": 403.3836975097656,
+      "all_finite": true
+    },
+    "pose_enc": {
+      "shape": [
+        1,
+        4,
+        9
+      ],
+      "dtype": "torch.float32",
+      "min": -1.0000921487808228,
+      "median": 5.6257471442222595e-05,
+      "max": 1.13433039188385,
+      "all_finite": true
+    },
+    "depth": {
+      "shape": [
+        1,
+        4,
+        1,
+        512,
+        512
+      ],
+      "dtype": "torch.float32",
+      "min": 0.31813839077949524,
+      "median": 1.1428502798080444,
+      "max": 1.6425155401229858,
+      "all_finite": true
+    },
+    "depth_confidence": {
+      "shape": [
+        1,
+        4,
+        1,
+        512,
+        512
+      ],
+      "dtype": "torch.float32",
+      "min": 1.0018470287322998,
+      "median": 13.173264503479004,
+      "max": 51.283447265625,
+      "all_finite": true
+    }
+  }
+}

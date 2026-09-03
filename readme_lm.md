@@ -56,3 +56,20 @@ def build_model_input(images: torch.Tensor, decoder: ModelInputDecoder | None = 
         decoder = ModelInputDecoder(cam_view=torch.empty(0), intrinsics=torch.empty(0))
     return ModelInput(encoder=encoder, decoder=decoder)
 ```
+## Step 3 接入官方 QuerySplat/VGGT，并建立 input-only VGM pass
+
+直接复用官方 QuerySplat 的 `scripts/models`、`options.py`、`rendering`、`utils` 和 `third_party/vggt_omega`，避免重新实现导致 forward 逻辑、参数名或 checkpoint key 不一致。VGGT 权重放在 `TokenGS/checkpoints/vggt_omega_1b_512.pt`。
+
+新增 `scripts/training/vggt_input_pass.py`，在不修改官方 `VGGTEncoder` 的前提下，用一次冻结的 VGGT Aggregator forward 同时提取 geometry features、input cameras、intrinsics、depth 和 confidence，避免训练时重复运行 1B encoder。单元测试已通过；真实 1B forward 需在 GPU 节点运行：
+
+```bash
+cd /fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS
+conda run -n querysplat python -m scripts.inspect_vggt_input_pass \
+  --input-tensor ../outputs/dl3dv_loader_smoke/input_raw.pt \
+  --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
+  --checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --output-dir ../outputs/vggt_input_smoke \
+  --device cuda
+```
+
+## Step 4
