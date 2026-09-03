@@ -1,0 +1,36 @@
+{
+  "data_root": "/fs/scratch/PAS2099/Lemeng/NHT/DL3DV-10K-Sample",
+  "scene_index": 0,
+  "scene_path": "/fs/scratch/PAS2099/Lemeng/NHT/DL3DV-10K-Sample/5c3af581028068a3c402c7cbe16ecf9471ddf2897c34ab634b7b1b6cf81aba00",
+  "provider_length": 11,
+  "seed": 42,
+  "num_input_views": 4,
+  "num_views": 8,
+  "images_all_shape": [
+    8,
+    3,
+    512,
+    512
+  ],
+  "images_all_dtype": "torch.float32",
+  "images_all_min": 0.0,
+  "images_all_max": 1.0,
+  "sample_keys": [
+    "cam_to_world_input",
+    "cam_view",
+    "cam_view_all",
+    "cam_view_input",
+    "has_mask",
+    "images_all",
+    "images_input",
+    "images_output",
+    "input",
+    "intrinsics",
+    "intrinsics_all",
+    "intrinsics_input",
+    "masks_all",
+    "masks_output",
+    "rays_ds",
+    "rays_os"
+  ]
+}
