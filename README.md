@@ -87,5 +87,24 @@ conda run -n querysplat python -m scripts.inspect_self_calibration \
   --device cuda
 ```
 
+### Step 5 Geometry/Appearance Dual-Branch Forward
+
+新增 `scripts/training/dual_branch_forward.py`，在不修改官方 `querysplat.py` 的情况下复用 Step 4 的 `Fgeo` 和 input cameras，避免第三次 VGM forward。Geometry Queries 从 `Fgeo` 预测 center/scale/rotation；Appearance Queries 只读取 input RGB 与 input-camera Plücker features，预测 opacity/SH；最后使用 Sim(3)-aligned supervision cameras 渲染，保证 target images 不进入重建分支。
+
+新增 `scripts/inspect_dual_branch_forward.py`：以 base-stage 的 1024 queries 生成 65,536 个 Gaussians，检查 BF16 forward、supervision rendering、L1 backward、三个可训练模块组的梯度以及 frozen VGGT 无梯度。相关单元测试、编译和 diff 检查已通过；真实 GPU smoke 不加载最终 QuerySplat checkpoint，因为此处验证的是随机初始化的 base-training graph。
+
+```bash
+cd /fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS
+conda run -n querysplat python -m scripts.inspect_dual_branch_forward \
+  --images-all ../outputs/dl3dv_loader_smoke/images_all.pt \
+  --input-normalized ../outputs/dl3dv_loader_smoke/input_normalized.pt \
+  --num-input-views 4 \
+  --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
+  --checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --output-dir ../outputs/dual_branch_smoke \
+  --device cuda \
+  --precision bf16
+```
+
 
 

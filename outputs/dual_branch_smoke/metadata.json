@@ -1,0 +1,59 @@
+{
+  "images_all": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/outputs/dl3dv_loader_smoke/images_all.pt",
+  "input_normalized": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/outputs/dl3dv_loader_smoke/input_normalized.pt",
+  "config_source": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS/checkpoints/querysplat_vggto_1B_512_8192.yaml",
+  "vggt_checkpoint": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS/checkpoints/vggt_omega_1b_512.pt",
+  "querysplat_checkpoint_loaded": false,
+  "device": "cuda",
+  "precision": "bf16",
+  "num_input_views": 4,
+  "num_supervision_views": 4,
+  "num_geometry_queries": 1024,
+  "gaussians_per_query": 64,
+  "gaussians_shape": [
+    1,
+    65536,
+    23
+  ],
+  "render_shape": [
+    1,
+    4,
+    3,
+    512,
+    512
+  ],
+  "loss_l1": 0.19798123836517334,
+  "sim3_scale": [
+    1.012773871421814
+  ],
+  "shared_relative_alignment": {
+    "center_rmse": [
+      0.0002141275763278827
+    ],
+    "rotation_mean_degrees": [
+      0.0
+    ]
+  },
+  "gradient_groups": {
+    "geometry": {
+      "parameter_count": 716949376,
+      "tensors_with_grad": 333,
+      "all_finite": true,
+      "l2_norm": 0.0001442241693038848
+    },
+    "appearance": {
+      "parameter_count": 369501760,
+      "tensors_with_grad": 179,
+      "all_finite": true,
+      "l2_norm": 0.00021007573973090557
+    },
+    "vggt_adapter": {
+      "parameter_count": 2112516,
+      "tensors_with_grad": 9,
+      "all_finite": true,
+      "l2_norm": 8.4600214640811e-08
+    }
+  },
+  "frozen_vggt_parameter_count": 1143814185,
+  "frozen_vggt_has_grad": false
+}

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 
 import torch
@@ -53,16 +54,26 @@ def _validate_cam_view(cam_view: torch.Tensor, name: str) -> None:
         raise ValueError(f"{name} must be a finite floating-point tensor")
 
 
+def _autocast_disabled(tensor: torch.Tensor):
+    if tensor.device.type in {"cpu", "cuda"}:
+        return torch.amp.autocast(device_type=tensor.device.type, enabled=False)
+    return nullcontext()
+
+
 def cam_view_to_c2w(cam_view: torch.Tensor) -> torch.Tensor:
     """Convert QuerySplat's transposed world-to-camera matrices to c2w."""
     _validate_cam_view(cam_view, "cam_view")
-    return torch.linalg.inv(cam_view.transpose(-2, -1))
+    working = cam_view.float() if cam_view.dtype in {torch.float16, torch.bfloat16} else cam_view
+    with _autocast_disabled(working):
+        return torch.linalg.inv(working.transpose(-2, -1))
 
 
 def c2w_to_cam_view(c2w: torch.Tensor) -> torch.Tensor:
     """Convert camera-to-world matrices to QuerySplat renderer convention."""
     _validate_cam_view(c2w, "c2w")
-    return torch.linalg.inv(c2w).transpose(-2, -1)
+    working = c2w.float() if c2w.dtype in {torch.float16, torch.bfloat16} else c2w
+    with _autocast_disabled(working):
+        return torch.linalg.inv(working).transpose(-2, -1)
 
 
 def estimate_sim3_from_cameras(
@@ -87,42 +98,43 @@ def estimate_sim3_from_cameras(
         raise ValueError("at least two shared input cameras are required to estimate scale")
 
     calculation_dtype = torch.float64 if source_cam_view.dtype == torch.float64 else torch.float32
-    source_c2w = cam_view_to_c2w(source_cam_view).to(calculation_dtype)
-    target_c2w = cam_view_to_c2w(target_cam_view).to(calculation_dtype)
-    source_rotations = source_c2w[..., :3, :3]
-    target_rotations = target_c2w[..., :3, :3]
+    with _autocast_disabled(source_cam_view):
+        source_c2w = cam_view_to_c2w(source_cam_view.to(calculation_dtype))
+        target_c2w = cam_view_to_c2w(target_cam_view.to(calculation_dtype))
+        source_rotations = source_c2w[..., :3, :3]
+        target_rotations = target_c2w[..., :3, :3]
 
-    rotation_candidates = target_rotations @ source_rotations.transpose(-2, -1)
-    rotation_sum = rotation_candidates.sum(dim=1)
-    u, _, vh = torch.linalg.svd(rotation_sum)
-    correction = torch.ones(
-        source_cam_view.shape[0], 3, device=rotation_sum.device, dtype=rotation_sum.dtype
-    )
-    correction[:, -1] = torch.det(u @ vh)
-    rotation = u @ torch.diag_embed(correction) @ vh
+        rotation_candidates = target_rotations @ source_rotations.transpose(-2, -1)
+        rotation_sum = rotation_candidates.sum(dim=1)
+        u, _, vh = torch.linalg.svd(rotation_sum)
+        correction = torch.ones(
+            source_cam_view.shape[0], 3, device=rotation_sum.device, dtype=rotation_sum.dtype
+        )
+        correction[:, -1] = torch.det(u @ vh)
+        rotation = u @ torch.diag_embed(correction) @ vh
 
-    source_centers = source_c2w[..., :3, 3]
-    target_centers = target_c2w[..., :3, 3]
-    source_mean = source_centers.mean(dim=1)
-    target_mean = target_centers.mean(dim=1)
-    source_centered = source_centers - source_mean[:, None]
-    target_centered = target_centers - target_mean[:, None]
-    rotated_source = torch.einsum("bvi,bji->bvj", source_centered, rotation)
+        source_centers = source_c2w[..., :3, 3]
+        target_centers = target_c2w[..., :3, 3]
+        source_mean = source_centers.mean(dim=1)
+        target_mean = target_centers.mean(dim=1)
+        source_centered = source_centers - source_mean[:, None]
+        target_centered = target_centers - target_mean[:, None]
+        rotated_source = torch.einsum("bvi,bji->bvj", source_centered, rotation)
 
-    denominator = source_centered.square().sum(dim=(-2, -1))
-    if bool((denominator <= minimum_center_variance).any()):
-        raise ValueError("shared source camera centers have insufficient baseline for scale")
-    numerator = (rotated_source * target_centered).sum(dim=(-2, -1))
-    scale = numerator / denominator
-    if not torch.isfinite(scale).all() or bool((scale <= 0).any()):
-        raise ValueError("estimated Sim(3) scale must be finite and positive")
+        denominator = source_centered.square().sum(dim=(-2, -1))
+        if bool((denominator <= minimum_center_variance).any()):
+            raise ValueError("shared source camera centers have insufficient baseline for scale")
+        numerator = (rotated_source * target_centered).sum(dim=(-2, -1))
+        scale = numerator / denominator
+        if not torch.isfinite(scale).all() or bool((scale <= 0).any()):
+            raise ValueError("estimated Sim(3) scale must be finite and positive")
 
-    rotated_source_mean = torch.einsum("bi,bji->bj", source_mean, rotation)
-    translation = target_mean - scale[:, None] * rotated_source_mean
+        rotated_source_mean = torch.einsum("bi,bji->bj", source_mean, rotation)
+        translation = target_mean - scale[:, None] * rotated_source_mean
     return Sim3Transform(
-        scale=scale.to(source_cam_view.dtype),
-        rotation=rotation.to(source_cam_view.dtype),
-        translation=translation.to(source_cam_view.dtype),
+        scale=scale,
+        rotation=rotation,
+        translation=translation,
     )
 
 
@@ -144,19 +156,19 @@ def apply_sim3_to_cameras(
             f"translation must have shape [{batch},3], got {tuple(transform.translation.shape)}"
         )
 
-    aligned_c2w = torch.eye(
-        4, device=source_c2w.device, dtype=source_c2w.dtype
-    ).view(1, 1, 4, 4).repeat(*source_c2w.shape[:2], 1, 1)
-    aligned_c2w[..., :3, :3] = (
-        transform.rotation[:, None] @ source_c2w[..., :3, :3]
-    )
-    aligned_c2w[..., :3, 3] = (
-        transform.scale[:, None, None]
-        * torch.einsum(
-            "bvi,bji->bvj", source_c2w[..., :3, 3], transform.rotation
+    with _autocast_disabled(source_c2w):
+        scale = transform.scale.to(device=source_c2w.device, dtype=source_c2w.dtype)
+        rotation = transform.rotation.to(device=source_c2w.device, dtype=source_c2w.dtype)
+        translation = transform.translation.to(device=source_c2w.device, dtype=source_c2w.dtype)
+        aligned_c2w = torch.eye(
+            4, device=source_c2w.device, dtype=source_c2w.dtype
+        ).view(1, 1, 4, 4).repeat(*source_c2w.shape[:2], 1, 1)
+        aligned_c2w[..., :3, :3] = rotation[:, None] @ source_c2w[..., :3, :3]
+        aligned_c2w[..., :3, 3] = (
+            scale[:, None, None]
+            * torch.einsum("bvi,bji->bvj", source_c2w[..., :3, 3], rotation)
+            + translation[:, None]
         )
-        + transform.translation[:, None]
-    )
     return c2w_to_cam_view(aligned_c2w)
 
 
@@ -167,17 +179,18 @@ def camera_alignment_metrics(
     """Measure shared-camera center and orientation residuals after alignment."""
     if aligned_cam_view.shape != target_cam_view.shape:
         raise ValueError("aligned and target cameras must have identical shapes")
-    aligned_c2w = cam_view_to_c2w(aligned_cam_view).float()
-    target_c2w = cam_view_to_c2w(target_cam_view).float()
-    center_error = aligned_c2w[..., :3, 3] - target_c2w[..., :3, 3]
-    center_rmse = center_error.square().sum(dim=-1).mean(dim=-1).sqrt()
+    with _autocast_disabled(aligned_cam_view):
+        aligned_c2w = cam_view_to_c2w(aligned_cam_view.float())
+        target_c2w = cam_view_to_c2w(target_cam_view.float())
+        center_error = aligned_c2w[..., :3, 3] - target_c2w[..., :3, 3]
+        center_rmse = center_error.square().sum(dim=-1).mean(dim=-1).sqrt()
 
-    relative_rotation = (
-        target_c2w[..., :3, :3] @ aligned_c2w[..., :3, :3].transpose(-2, -1)
-    )
-    trace = relative_rotation.diagonal(dim1=-2, dim2=-1).sum(dim=-1)
-    cosine = ((trace - 1.0) / 2.0).clamp(-1.0, 1.0)
-    angles = torch.rad2deg(torch.acos(cosine))
+        relative_rotation = (
+            target_c2w[..., :3, :3] @ aligned_c2w[..., :3, :3].transpose(-2, -1)
+        )
+        trace = relative_rotation.diagonal(dim1=-2, dim2=-1).sum(dim=-1)
+        cosine = ((trace - 1.0) / 2.0).clamp(-1.0, 1.0)
+        angles = torch.rad2deg(torch.acos(cosine))
     return CameraAlignmentMetrics(
         center_rmse=center_rmse,
         rotation_mean_degrees=angles.mean(dim=-1),

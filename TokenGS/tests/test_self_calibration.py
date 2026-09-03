@@ -126,6 +126,20 @@ class TestSelfCalibration(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "insufficient baseline"):
             estimate_sim3_from_cameras(repeated, repeated)
 
+    def test_sim3_stays_fp32_inside_bf16_autocast(self):
+        shared_views = 4
+        with torch.autocast(device_type="cpu", dtype=torch.bfloat16):
+            estimated = estimate_sim3_from_cameras(
+                self.source_cam_view[:, :shared_views],
+                self.target_cam_view[:, :shared_views],
+            )
+            aligned = apply_sim3_to_cameras(self.source_cam_view, estimated)
+
+        self.assertEqual(estimated.scale.dtype, torch.float32)
+        self.assertEqual(estimated.rotation.dtype, torch.float32)
+        self.assertEqual(aligned.dtype, torch.float32)
+        torch.testing.assert_close(aligned, self.target_cam_view, atol=2e-5, rtol=2e-5)
+
     def test_two_pass_contract_keeps_all_view_output_camera_only(self):
         input_views = 4
         model = FakeTwoPassEncoder(

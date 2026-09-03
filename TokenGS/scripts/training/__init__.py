@@ -14,19 +14,29 @@ from .self_calibration import (
     forward_self_calibrated_vgm,
     forward_vggt_camera_only,
 )
+from .dual_branch_forward import (
+    DualBranchForwardOutput,
+    build_dual_branch_latent,
+    decode_and_render_from_self_calibration,
+    forward_querysplat_training,
+)
 
 __all__ = [
     "CameraAlignmentMetrics",
     "CameraOnlyOutput",
+    "DualBranchForwardOutput",
     "SelfCalibratedVGMOutput",
     "Sim3Transform",
     "VGGTInputPassOutput",
     "apply_sim3_to_cameras",
+    "build_dual_branch_latent",
     "camera_alignment_metrics",
     "cam_view_to_c2w",
     "c2w_to_cam_view",
+    "decode_and_render_from_self_calibration",
     "estimate_sim3_from_cameras",
     "forward_self_calibrated_vgm",
+    "forward_querysplat_training",
     "forward_vggt_camera_only",
     "forward_vggt_input_once",
 ]
