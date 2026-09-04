@@ -129,4 +129,56 @@ conda run -n querysplat python -m scripts.inspect_full_loss \
   --step 5000
 ```
 
+### Step 7 Optimizer, LR, EMA, Checkpoint and Fixed-Scene Overfit
 
+新增 `scripts/training/state.py`：沿用 TokenGS 的 AdamW 参数分组与 `(0.9,0.95)` betas，加入 linear warmup + cosine decay、global gradient clipping、仅覆盖 trainable parameters 的 EMA (`0.9995`) 和原子写入的可恢复 checkpoint。Checkpoint 保存 trainable model、optimizer、scheduler、EMA、global step 与 RNG；frozen VGGT 继续引用外部权重，不重复写入。
+
+新增 `scripts/training/fixed_scene_cache.py` 与 `scripts/overfit_fixed_scene.py`。固定场景只运行一次 two-pass frozen VGM 并缓存中间层；每步仍重新执行 trainable layer fusion、双分支 decoder、完整 loss 和 backward。默认运行 100 steps，输出初始/最终 render、target、loss history 和可续训的单个 `latest.pt`。这个 cache 只用于 fixed-scene overfit 诊断，正式多场景训练不能跨 sample 复用。
+
+```bash
+cd /fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS
+conda run -n querysplat python -m scripts.overfit_fixed_scene \
+  --images-all ../outputs/dl3dv_loader_smoke/images_all.pt \
+  --input-normalized ../outputs/dl3dv_loader_smoke/input_normalized.pt \
+  --num-input-views 4 \
+  --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
+  --checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --workspace ../outputs/fixed_scene_overfit \
+  --steps 100 \
+  --warmup-steps 10 \
+  --learning-rate 1e-4 \
+  --gradient-clip 1.0 \
+  --ema-decay 0.9995 \
+  --precision bf16
+```
+
+Resume 必须保持总 steps 和 query 数一致：
+
+```bash
+conda run -n querysplat python -m scripts.overfit_fixed_scene \
+  --workspace ../outputs/fixed_scene_overfit \
+  --steps 100 \
+  --warmup-steps 10 \
+  --resume ../outputs/fixed_scene_overfit/latest.pt
+```
+
+`latest.pt` 包含约 10 亿 trainable parameters 的 model、AdamW states 和 EMA，文件可能达到十几 GB；脚本始终原子覆盖同一个文件，避免 checkpoint 数量累积。
+
+```bash
+conda run -n querysplat python -m scripts.overfit_fixed_scene \
+  --images-all ../outputs/dl3dv_loader_smoke/images_all.pt \
+  --input-normalized ../outputs/dl3dv_loader_smoke/input_normalized.pt \
+  --num-input-views 4 \
+  --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
+  --checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --workspace ../outputs/fixed_scene_overfit_500 \
+  --steps 500 \
+  --warmup-steps 20 \
+  --early-reg-end-step 100 \
+  --lpips-start-step 50 \
+  --lpips-ramp-end-step 100 \
+  --learning-rate 1e-4 \
+  --gradient-clip 1.0 \
+  --ema-decay 0.9995 \
+  --precision bf16
+```

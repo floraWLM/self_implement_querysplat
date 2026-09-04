@@ -31,19 +31,37 @@ from .losses import (
     compute_visibility_loss,
     sample_vggt_depth_pointcloud,
 )
+from .state import (
+    ExponentialMovingAverage,
+    OptimizerConfig,
+    build_adamw,
+    build_warmup_cosine_scheduler,
+    load_training_checkpoint,
+    save_training_checkpoint,
+)
+from .fixed_scene_cache import (
+    FixedSceneVGMCache,
+    materialize_fixed_scene_self_calibration,
+    prepare_fixed_scene_vgm_cache,
+)
 
 __all__ = [
     "CameraAlignmentMetrics",
     "CameraOnlyOutput",
     "DualBranchForwardOutput",
+    "ExponentialMovingAverage",
+    "FixedSceneVGMCache",
     "LinearWeightSchedule",
+    "OptimizerConfig",
     "QuerySplatLossConfig",
     "SelfCalibratedVGMOutput",
     "Sim3Transform",
     "VGGTInputPassOutput",
     "apply_sim3_to_cameras",
     "build_dual_branch_latent",
+    "build_adamw",
     "build_lpips_vgg",
+    "build_warmup_cosine_scheduler",
     "camera_alignment_metrics",
     "cam_view_to_c2w",
     "c2w_to_cam_view",
@@ -58,5 +76,9 @@ __all__ = [
     "forward_querysplat_training",
     "forward_vggt_camera_only",
     "forward_vggt_input_once",
+    "load_training_checkpoint",
+    "materialize_fixed_scene_self_calibration",
+    "prepare_fixed_scene_vgm_cache",
     "sample_vggt_depth_pointcloud",
+    "save_training_checkpoint",
 ]

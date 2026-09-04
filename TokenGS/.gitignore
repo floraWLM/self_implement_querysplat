@@ -31,3 +31,6 @@ data/dl3dv_eval
 # OS / core dumps
 .DS_Store
 core.*
+
+# Outputs
+outputs/
