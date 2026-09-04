@@ -1,4 +1,7 @@
 ## Implmentation steps
+```bash
+source osc_env.sh
+```
 ### Step 1 先用 TokenGS DL3DV loader 取出一个 scene 的 images_all
 We train exclusively on DL3DV (Ling et al. 2024) using 512 × 512 center-cropped
 images.
@@ -106,5 +109,24 @@ conda run -n querysplat python -m scripts.inspect_dual_branch_forward \
   --precision bf16
 ```
 
+### Step 6 Complete Loss System
+
+新增 `scripts/training/losses.py`，实现 `L1 + 0.2·LSSIM + λLPIPS(t)·LPIPS`、基于 input 与 aligned supervision cameras 的 visibility loss、input-only VGGT depth 反投影后的双向 Chamfer，以及 opacity-floor log-hinge。LPIPS 固定为 FP32；Sim(3)、visibility、Chamfer 和 opacity 数值路径也保持 FP32。LPIPS 渐入、Chamfer/opacity 渐出均由显式 linear schedule 控制；论文未给出的退火终点不写死在模型中。
+
+Chamfer 对 depth points 和 Gaussian centers 做确定性采样并分块计算，避免构造完整的巨大距离矩阵。以下 smoke step 让 LPIPS、Chamfer 和 opacity 三个 scheduled weights 同时非零，只用于检查全部 loss 和 backward，不代表最终训练 schedule。
+
+```bash
+cd /fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS
+conda run -n querysplat python -m scripts.inspect_full_loss \
+  --images-all ../outputs/dl3dv_loader_smoke/images_all.pt \
+  --input-normalized ../outputs/dl3dv_loader_smoke/input_normalized.pt \
+  --num-input-views 4 \
+  --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
+  --checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --output-dir ../outputs/full_loss_smoke \
+  --device cuda \
+  --precision bf16 \
+  --step 5000
+```
 
 

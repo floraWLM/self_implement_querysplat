@@ -1,0 +1,74 @@
+{
+  "images_all": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/outputs/dl3dv_loader_smoke/images_all.pt",
+  "input_normalized": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/outputs/dl3dv_loader_smoke/input_normalized.pt",
+  "config_source": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS/checkpoints/querysplat_vggto_1B_512_8192.yaml",
+  "vggt_checkpoint": "/fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS/checkpoints/vggt_omega_1b_512.pt",
+  "querysplat_checkpoint_loaded": false,
+  "device": "cuda",
+  "precision": "bf16",
+  "step": 5000,
+  "num_geometry_queries": 1024,
+  "gaussians_shape": [
+    1,
+    65536,
+    23
+  ],
+  "render_shape": [
+    1,
+    4,
+    3,
+    512,
+    512
+  ],
+  "losses": {
+    "loss": 0.4798634648323059,
+    "loss_photo": 0.2704623341560364,
+    "loss_l1": 0.1979822814464569,
+    "loss_ssim": 0.28257107734680176,
+    "loss_lpips": 0.7184638977050781,
+    "loss_visibility": 0.0,
+    "loss_chamfer": 0.41880226135253906,
+    "loss_opacity_floor": 0.0,
+    "weight_lpips": 0.02222222276031971,
+    "weight_chamfer": 0.5,
+    "weight_opacity": 0.05000000074505806
+  },
+  "weighted_terms": {
+    "photo": 0.2704623341560364,
+    "visibility": 0.0,
+    "chamfer": 0.20940113067626953,
+    "opacity_floor": 0.0
+  },
+  "schedule": {
+    "early_reg_end_step": 10000,
+    "lpips_start_step": 1000,
+    "lpips_ramp_end_step": 10000
+  },
+  "chamfer_sampling": {
+    "max_depth_points": 2048,
+    "max_gaussian_points": 2048,
+    "chunk_size": 512
+  },
+  "gradient_groups": {
+    "geometry": {
+      "parameter_count": 716949376,
+      "tensors_with_grad": 333,
+      "all_finite": true,
+      "l2_norm": 0.18133984550454874
+    },
+    "appearance": {
+      "parameter_count": 369501760,
+      "tensors_with_grad": 179,
+      "all_finite": true,
+      "l2_norm": 0.00021331588873979023
+    },
+    "vggt_adapter": {
+      "parameter_count": 2112516,
+      "tensors_with_grad": 9,
+      "all_finite": true,
+      "l2_norm": 1.559771251706672e-06
+    }
+  },
+  "frozen_vggt_has_grad": false,
+  "frozen_lpips_has_grad": false
+}
