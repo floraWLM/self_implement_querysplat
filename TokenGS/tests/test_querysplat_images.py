@@ -42,6 +42,12 @@ class TestQuerySplatImages(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, r"\[0, 1\]"):
             split_querysplat_images(torch.full((4, 3, 2, 2), 2.0), 2)
 
+    def test_clamps_resize_roundoff_only(self):
+        images = torch.zeros(4, 3, 2, 2)
+        images[0, 0, 0, 0] = 1.0 + 1e-7
+        result = split_querysplat_images(images, 2)
+        self.assertEqual(float(result.input_raw.max()), 1.0)
+
 
 if __name__ == "__main__":
     unittest.main()

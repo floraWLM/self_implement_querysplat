@@ -164,21 +164,106 @@ conda run -n querysplat python -m scripts.overfit_fixed_scene \
 
 `latest.pt` 包含约 10 亿 trainable parameters 的 model、AdamW states 和 EMA，文件可能达到十几 GB；脚本始终原子覆盖同一个文件，避免 checkpoint 数量累积。
 
+### Step 8 Multi-Scene DL3DV Training with DDP
+
+新增 `scripts/training/multiscene.py` 和 `scripts/train_querysplat.py`。训练直接读取 TokenGS `Provider(training=True)` 的 `images_all`；Provider 对每个 scene 和 epoch 重新采样帧，前 4 帧作为 input views，其余帧作为 supervision views。随后从同一份 `images_all` 重新构造 raw、ImageNet-normalized input 和 supervision tensors，防止不同分支采用不一致的裁剪或视图顺序。Step 8 固定为 base stage 的 4 input views、1024 queries；论文中的 2–12 views 和 query expansion 留到下一阶段。
+
+每个 `torchrun` process 负责一张 GPU 和一个 sample，使用 `DistributedSampler` 划分 scenes。完整 two-pass VGM、双分支 decoder 和 renderer 都放在 DDP forward boundary 内；梯度同步后执行 global clipping、AdamW、warmup-cosine 和 EMA。loss scalars 在所有 ranks 求平均，只有 rank 0 写图像、JSONL 和原子 checkpoint。Checkpoint 额外保存每个 rank 的 RNG state，并要求恢复时 world size、view counts 和 dataloader 长度保持一致。
+
+默认 base schedule 为 300K steps、2K warmup、30K 前退火 Chamfer/opacity，并在 10K–30K 渐入 LPIPS；论文没有给出后三个边界的精确数字，因此它们是显式 CLI 默认值，不是写死在模型里的论文常量。
+
+同时将 `tokengs.utils` 的 evaluation metrics 改为 lazy import，并将 `Provider` 对 TokenGS Tyro options 的运行时导入改为 type-check-only。原因是 DL3DV loader 只需要 data utilities 和少量配置字段，不应被未使用的 `scikit-image` evaluation dependency 或旧 Tyro CLI 阻塞；调用 TokenGS evaluation API 时仍会按原接口加载 metrics。Loader resize 产生的 `1e-7` 量级 RGB 越界会在验证容差内 clamp 到 `[0,1]`，更大的数据范围错误仍直接报错。
+
+先用单 GPU 做多场景 smoke（不是 fixed-scene cache，每一步都会为当前 scene 重新运行 two-pass VGM）：
+
 ```bash
-conda run -n querysplat python -m scripts.overfit_fixed_scene \
-  --images-all ../outputs/dl3dv_loader_smoke/images_all.pt \
-  --input-normalized ../outputs/dl3dv_loader_smoke/input_normalized.pt \
-  --num-input-views 4 \
+cd /fs/scratch/PAS2099/Lemeng/NHT/self_implement_querysplat/TokenGS
+conda run -n querysplat python -m scripts.train_querysplat \
+  --data-root /fs/scratch/PAS2099/Lemeng/NHT/DL3DV-10K-Sample \
   --config checkpoints/querysplat_vggto_1B_512_8192.yaml \
-  --checkpoint checkpoints/vggt_omega_1b_512.pt \
-  --workspace ../outputs/fixed_scene_overfit_500 \
-  --steps 500 \
-  --warmup-steps 20 \
-  --early-reg-end-step 100 \
-  --lpips-start-step 50 \
-  --lpips-ramp-end-step 100 \
-  --learning-rate 1e-4 \
-  --gradient-clip 1.0 \
-  --ema-decay 0.9995 \
+  --vgm-checkpoint checkpoints/vggt_omega_1b_512.pt \
+  --workspace ../outputs/querysplat_multiscene_smoke \
+  --total-steps 20 \
+  --warmup-steps 5 \
+  --early-reg-end-step 10 \
+  --lpips-start-step 5 \
+  --lpips-ramp-end-step 10 \
+  --checkpoint-every 20 \
+  --image-every 10 \
+  --num-workers 4 \
   --precision bf16
 ```
+
+多 GPU 使用相同参数并由 `torchrun` 注入 rank 信息，例如 8 GPUs：
+
+```bash
+conda run -n querysplat torchrun --standalone --nproc-per-node=8 \
+  -m scripts.train_querysplat \
+  --data-root /path/to/full/DL3DV \
+  --workspace ../outputs/querysplat_dl3dv_base \
+  --total-steps 300000 \
+  --num-workers 8 \
+  --precision bf16
+```
+
+## Training Summary
+
+当前 training code 实现的是 QuerySplat 的 **1024-query base stage**。它复用官方 QuerySplat inference model 和 TokenGS DL3DV loader，不改 checkpoint parameter names；VGGT-Ω backbone、camera head 和 depth head 始终冻结，QuerySplat geometry/appearance decoders、output heads、queries，以及 VGGT feature layer mixer/normalization参与训练。
+
+### 1. Data and view sampling
+
+DL3DV `Provider(training=True)` 每个 epoch 重新打乱 scenes，并为每个 scene 动态采样 8 张图。当前固定前 4 张为 input views、后 4 张为 supervision views；“动态”指每次采到的具体帧变化，而不是 input view 数变化。`images_all` 是唯一图像来源，并从中重新得到：
+
+- `input_raw`：input-only VGM 使用的 `[0,1]` RGB。
+- `input_normalized`：appearance RGB encoder 使用的 ImageNet-normalized input images。
+- `supervision_images`：只用于 rendering loss 的 target images。
+
+Loader resize 产生的 `1e-6` 内浮点越界会 clamp 到 `[0,1]`。代码要求 `images_all` 的前四张与 `input_raw` 逐元素相同，防止视图顺序或预处理不一致。
+
+### 2. Two isolated VGM passes and Sim(3)
+
+每个 multi-scene training step 都执行两次独立的 frozen VGGT-Ω forward：
+
+1. **Input-only pass** 只读取 `input_raw`，提取第 4、11、17、23 层 geometry features，同时预测 input cameras、intrinsics 和 depth。它定义 geometry decoding 的原生坐标系。
+2. **All-view pass** 读取 input 与 supervision views 的 union，但只导出 cameras/intrinsics，不向 reconstruction branch 传递 supervision features。
+
+使用两个 pass 中共同的四个 input cameras 估计 `all-view → input-only` Sim(3)，再对齐全部 all-view cameras。最终 geometry features、input-camera Plücker rays、Gaussian centers 和 supervision cameras 位于同一坐标系，同时 target-view appearance/geometry information 不会泄漏到 reconstruction branches。
+
+### 3. Geometry and appearance branches
+
+Geometry branch 使用 1024 个 learnable geometry queries，通过 12 层 decoder cross-attend input-only geometry features。每个 query 输出 64 个 Gaussians 的 center、scale 和 rotation，因此 base stage 一共生成 65,536 个 Gaussians。
+
+Appearance branch 从 `input_normalized` RGB patch embeddings 和 input VGM cameras 生成的 Plücker ray embeddings 构建 appearance features。它以 geometry tokens 为基础，再加入 learnable appearance queries，通过 6 层 decoder 输出 opacity 和一阶 spherical-harmonic color。监督视图只在 Gaussian 完成后作为 renderer cameras 和 target RGB 使用。
+
+### 4. Rendering and losses
+
+Gaussians 使用 Sim(3)-aligned supervision cameras 进行 differentiable rendering。总目标为：
+
+```text
+L = L1 + 0.2 * LSSIM + λLPIPS(t) * LLPIPS
+    + 1.0 * Lvisibility
+    + βCD(t) * LChamfer
+    + βα(t) * Lopacity-floor
+```
+
+- `L1 + SSIM + LPIPS` 是主要 image-space reconstruction signal；LPIPS 始终用 FP32 计算。
+- Visibility loss 使用 input 和 supervision cameras，惩罚位于所有 frusta 外或相机后方的 Gaussian centers。
+- Chamfer 将 input-only VGGT depth 反投影为 pseudo point cloud，再与 Gaussian centers 计算双向距离；点云经过确定性采样和分块计算以控制显存。
+- Opacity-floor 使用 log-hinge，早期阻止 Gaussians 过快透明化，默认 opacity floor 为 `0.1`。
+- Chamfer 和 opacity-floor 只在训练早期使用并线性退火到零；LPIPS 延迟加入并线性升到 `0.05`。具体边界由 CLI 指定，不写死在模型中。
+
+### 5. Optimization state
+
+训练使用 AdamW，默认 learning rate `1e-4`、betas `(0.9, 0.95)`、weight decay `0.05`。bias、normalization 和一维参数不使用 weight decay。LR 先 linear warmup，再 cosine decay；global gradient norm clip 为 `1.0`。所有 trainable parameters 维护 decay `0.9995` 的 EMA，frozen VGGT 不进入 optimizer、EMA 或 training checkpoint。
+
+Checkpoint 原子覆盖单个 `latest.pt`，包含 trainable model、AdamW、scheduler、EMA、global step、RNG 和训练 contract。Resume 要求 total steps、query/view counts、world size 和 dataloader steps-per-epoch 一致。由于 model、AdamW states 和 EMA 很大，checkpoint 约为 17 GB，写入时需要约两倍临时空间。
+
+### 6. Fixed-scene and multi-scene modes
+
+`scripts.overfit_fixed_scene` 是梯度与可学习性诊断：同一 scene 的 frozen VGM products 只计算并缓存一次，每步仍重新运行 trainable feature fusion、双分支 decoder、renderer 和 loss。它不能代表正式数据训练。
+
+`scripts.train_querysplat` 是正式 multi-scene loop：每步读取新 sample，并为该 sample 重新执行完整 two-pass VGM 和 Sim(3)。当前每 GPU batch size 为 1。单 GPU直接运行时 `world_size=1`、`ddp=false`；使用 `torchrun` 时由 `DistributedSampler` 将 scenes 分到各 ranks，完整 forward 位于 DDP boundary 内，loss scalars 跨 ranks 求平均，只有 rank 0 写 metrics、images 和 checkpoint，各 rank 的 RNG state 都进入 checkpoint。
+
+### 7. Current stage boundary
+
+当前实现只覆盖论文的 base stage：4 input views、1024 queries、300K-step 接口。论文后续的 progressive query expansion（1024→2048→4096→8192）、每阶段 30K steps、随机 2–12 input views，以及 late-stage 95% loss-rank filtering 尚未进入当前 training loop，应作为下一阶段单独实现和验证。现有 11-scene `DL3DV-10K-Sample` 适合 smoke test 和小数据 overfit；训练可泛化模型需要完整 DL3DV 和更大的 global batch。

@@ -44,16 +44,25 @@ from .fixed_scene_cache import (
     materialize_fixed_scene_self_calibration,
     prepare_fixed_scene_vgm_cache,
 )
+from .multiscene import (
+    DL3DVLoaderBundle,
+    QuerySplatTrainingModule,
+    build_dl3dv_dataloader,
+    prepare_querysplat_images,
+    set_dl3dv_epoch,
+)
 
 __all__ = [
     "CameraAlignmentMetrics",
     "CameraOnlyOutput",
     "DualBranchForwardOutput",
+    "DL3DVLoaderBundle",
     "ExponentialMovingAverage",
     "FixedSceneVGMCache",
     "LinearWeightSchedule",
     "OptimizerConfig",
     "QuerySplatLossConfig",
+    "QuerySplatTrainingModule",
     "SelfCalibratedVGMOutput",
     "Sim3Transform",
     "VGGTInputPassOutput",
@@ -61,6 +70,7 @@ __all__ = [
     "build_dual_branch_latent",
     "build_adamw",
     "build_lpips_vgg",
+    "build_dl3dv_dataloader",
     "build_warmup_cosine_scheduler",
     "camera_alignment_metrics",
     "cam_view_to_c2w",
@@ -79,6 +89,8 @@ __all__ = [
     "load_training_checkpoint",
     "materialize_fixed_scene_self_calibration",
     "prepare_fixed_scene_vgm_cache",
+    "prepare_querysplat_images",
     "sample_vggt_depth_pointcloud",
     "save_training_checkpoint",
+    "set_dl3dv_epoch",
 ]

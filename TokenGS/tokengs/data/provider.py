@@ -19,9 +19,9 @@ from torch.utils.data.dataset import Dataset
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 import inspect
+from typing import TYPE_CHECKING
 
 from tokengs.utils.data import ImageTransform, ray_condition, timestep_embedding
-from tokengs.options import Options
 from tokengs.data.registry import dataset_registry
 from tokengs.utils.augmentation import random_reflect
 from tokengs.data.datafield import (
@@ -32,6 +32,9 @@ from tokengs.data.datafield import (
     DF_DEPTH,
 )
 
+if TYPE_CHECKING:
+    from tokengs.options import Options
+
 
 def _accepts_kwarg(sig: inspect.Signature, name: str) -> bool:
     return name in sig.parameters or any(
@@ -41,7 +44,7 @@ def _accepts_kwarg(sig: inspect.Signature, name: str) -> bool:
 
 
 class Provider(Dataset):
-    def __init__(self, dataset_name: str, opt: Options, training: bool = True, num_repeat: int = 1):
+    def __init__(self, dataset_name: str, opt: "Options", training: bool = True, num_repeat: int = 1):
         self.opt = opt
         if '_scaled_' in dataset_name:
             # overwrite the scene scale

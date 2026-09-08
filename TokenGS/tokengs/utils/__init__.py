@@ -13,11 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Utility functions for the tokengs package."""
+"""Utility functions for the tokengs package.
 
-from .metrics import MetricsCalculator, MetricsTracker
+Evaluation metrics are imported lazily so data loading does not require the
+optional scikit-image evaluation dependency.
+"""
 
 __all__ = [
     "MetricsCalculator",
     "MetricsTracker",
 ]
+
+
+def __getattr__(name):
+    if name in __all__:
+        from .metrics import MetricsCalculator, MetricsTracker
+
+        return {
+            "MetricsCalculator": MetricsCalculator,
+            "MetricsTracker": MetricsTracker,
+        }[name]
+    raise AttributeError(name)

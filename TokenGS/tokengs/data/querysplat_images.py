@@ -51,10 +51,12 @@ def split_querysplat_images(
         raise ValueError("images_all contains NaN or Inf")
     value_min = float(images_all.min())
     value_max = float(images_all.max())
-    if value_min < 0.0 or value_max > 1.0:
+    range_tolerance = 1e-6
+    if value_min < -range_tolerance or value_max > 1.0 + range_tolerance:
         raise ValueError(
             f"images_all must be in [0, 1], observed [{value_min}, {value_max}]"
         )
+    images_all = images_all.clamp(0.0, 1.0)
 
     input_raw = images_all.narrow(view_dim, 0, num_input_views).contiguous()
     supervision_images = images_all.narrow(
