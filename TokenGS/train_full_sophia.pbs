@@ -1,0 +1,72 @@
+#!/bin/bash -l
+#PBS -A ideas
+#PBS -q by-gpu
+#PBS -l select=4
+#PBS -l walltime=12:00:00
+#PBS -l filesystems=home:eagle
+#PBS -N querysplat_full
+#PBS -j oe
+
+set -euo pipefail
+
+# Activate the verified Python environment
+source /eagle/ideas/lemeng_wang/miniconda3/etc/profile.d/conda.sh
+conda activate tokengs
+
+# GPU and PyTorch configuration
+export TORCH_HOME=/eagle/ideas/lemeng_wang/.cache/torch
+export TORCH_CUDA_ARCH_LIST=8.0
+
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+
+export PYTHONUNBUFFERED=1
+export PYTHONFAULTHANDLER=1
+export NCCL_DEBUG=WARN
+
+# Project directory
+cd /home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS
+
+# Dataset and output directory
+DATA=/eagle/ideas/lemeng_wang/datasets/DL3DV-ALL-960P
+OUT=/eagle/ideas/lemeng_wang/outputs/querysplat_sophia_full
+
+mkdir -p "$OUT"
+
+echo "=================================="
+echo "Job ID: ${PBS_JOBID:-unknown}"
+echo "Node: $(hostname)"
+echo "GPUs: ${CUDA_VISIBLE_DEVICES:-not set}"
+echo "Started: $(date)"
+echo "Output: $OUT"
+echo "=================================="
+
+# Resume automatically if checkpoint exists
+RESUME_ARGS=()
+
+if [ -f "$OUT/latest.pt" ]; then
+    echo "Found checkpoint. Resuming..."
+    RESUME_ARGS=(--resume "$OUT/latest.pt")
+else
+    echo "No checkpoint found. Starting from step 0."
+fi
+
+# Full QuerySplat training
+torchrun --standalone --nproc_per_node=4 \
+    scripts/train_querysplat.py \
+    --data-root "$DATA" \
+    --total-steps 300000 \
+    --warmup-steps 2000 \
+    --learning-rate 1e-4 \
+    --num-workers 0 \
+    --checkpoint-every 20 \
+    --image-every 100 \
+    --log-every 10 \
+    --precision bf16 \
+    --workspace "$OUT" \
+    "${RESUME_ARGS[@]}" \
+    2>&1 | tee -a "$OUT/training.log"
+
+echo "Training process finished: $(date)"

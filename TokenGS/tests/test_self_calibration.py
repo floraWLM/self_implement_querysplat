@@ -126,6 +126,19 @@ class TestSelfCalibration(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "insufficient baseline"):
             estimate_sim3_from_cameras(repeated, repeated)
 
+    def test_negative_scale_reports_failed_batch_and_fit_values(self):
+        from scripts.training.self_calibration import cam_view_to_c2w
+
+        target_c2w = cam_view_to_c2w(self.source_cam_view)
+        target_c2w[1, :, :3, 3] *= -1
+        target = c2w_to_cam_view(target_c2w)
+        with self.assertRaises(ValueError) as raised:
+            estimate_sim3_from_cameras(self.source_cam_view, target)
+        message = str(raised.exception)
+        self.assertIn("invalid_batch_indices=[1]", message)
+        for name in ("numerator=", "denominator=", "scale="):
+            self.assertIn(name, message)
+
     def test_sim3_stays_fp32_inside_bf16_autocast(self):
         shared_views = 4
         with torch.autocast(device_type="cpu", dtype=torch.bfloat16):

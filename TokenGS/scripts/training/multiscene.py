@@ -27,6 +27,7 @@ from tokengs.data.querysplat_images import (
 class DL3DVProviderOptions:
     """Minimal TokenGS Provider protocol without importing its Tyro CLI."""
 
+    indexed_sampling: bool = True
     evaluating: bool = False
     dataset_kwargs: dict[str, str] | None = None
     num_input_views: int = 4
@@ -49,6 +50,16 @@ class DL3DVLoaderBundle:
     dataloader: DataLoader
     dataset: Provider
     sampler: DistributedSampler
+
+
+class ResumableDistributedSampler(DistributedSampler):
+    """Skip indices before dataset access, retaining the full epoch length."""
+
+    start_index = 0
+
+    def __iter__(self):
+        from itertools import islice
+        return islice(super().__iter__(), self.start_index, None)
 
 
 class QuerySplatTrainingModule(nn.Module):
@@ -110,7 +121,7 @@ def build_dl3dv_dataloader(
             f"training split has {len(dataset)} scenes but world_size is {world_size}; "
             "DistributedSampler(drop_last=True) would leave ranks empty"
         )
-    sampler = DistributedSampler(
+    sampler = ResumableDistributedSampler(
         dataset,
         num_replicas=world_size,
         rank=rank,

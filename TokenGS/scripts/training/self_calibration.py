@@ -123,11 +123,22 @@ def estimate_sim3_from_cameras(
 
         denominator = source_centered.square().sum(dim=(-2, -1))
         if bool((denominator <= minimum_center_variance).any()):
-            raise ValueError("shared source camera centers have insufficient baseline for scale")
+            raise ValueError(
+                "shared source camera centers have insufficient baseline for scale; "
+                f"denominator={denominator.detach().cpu().tolist()}, "
+                f"minimum_center_variance={minimum_center_variance}"
+            )
         numerator = (rotated_source * target_centered).sum(dim=(-2, -1))
         scale = numerator / denominator
         if not torch.isfinite(scale).all() or bool((scale <= 0).any()):
-            raise ValueError("estimated Sim(3) scale must be finite and positive")
+            invalid = ~torch.isfinite(scale) | (scale <= 0)
+            raise ValueError(
+                "estimated Sim(3) scale must be finite and positive; "
+                f"invalid_batch_indices={invalid.nonzero().flatten().cpu().tolist()}, "
+                f"numerator={numerator.detach().cpu().tolist()}, "
+                f"denominator={denominator.detach().cpu().tolist()}, "
+                f"scale={scale.detach().cpu().tolist()}"
+            )
 
         rotated_source_mean = torch.einsum("bi,bji->bj", source_mean, rotation)
         translation = target_mean - scale[:, None] * rotated_source_mean

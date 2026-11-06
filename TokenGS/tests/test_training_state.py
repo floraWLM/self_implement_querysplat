@@ -1,6 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import torch
 import torch.nn as nn
@@ -52,6 +53,26 @@ class TestTrainingState(unittest.TestCase):
         torch.testing.assert_close(ema.shadow["weight"], expected)
         self.assertIsNone(model.frozen.grad)
         self.assertAlmostEqual(optimizer.param_groups[0]["lr"], 1e-3)
+
+    def test_failed_save_keeps_previous_checkpoint(self):
+        model = TinyModel()
+        optimizer = build_adamw(model, OptimizerConfig(), fused=False)
+        scheduler = build_warmup_cosine_scheduler(optimizer, 0, 5)
+        ema = ExponentialMovingAverage(model)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "latest.pt"
+            save_training_checkpoint(path, model, optimizer, scheduler, ema, 1)
+            previous = path.read_bytes()
+            with mock.patch("scripts.training.state.torch.save", side_effect=OSError("disk full")):
+                with self.assertRaises(OSError):
+                    save_training_checkpoint(path, model, optimizer, scheduler, ema, 2)
+            self.assertEqual(path.read_bytes(), previous)
+            with mock.patch("scripts.training.state.torch.set_rng_state") as restore:
+                step, _ = load_training_checkpoint(
+                    path, model, optimizer, scheduler, ema, restore_rng=False,
+                )
+            restore.assert_not_called()
+            self.assertEqual(step, 1)
 
     def test_checkpoint_restores_model_optimizer_scheduler_ema_and_step(self):
         torch.manual_seed(3)

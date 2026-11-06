@@ -91,6 +91,7 @@ class Provider(Dataset):
             self.data_fields.append(DF_DEPTH)
 
     def set_rng_epoch(self, epoch: int) -> None:
+        self.rng_epoch = epoch
         self.rng = np.random.default_rng(epoch + self.opt.seed)
         self.generator = torch.Generator(device='cpu').manual_seed(epoch + self.opt.seed)
 
@@ -409,11 +410,33 @@ class Provider(Dataset):
 
         rgbs, masks, depths, c2ws, intrinsics, timesteps = _curate_batch_fn(all_rgbs, all_masks, all_depths, all_c2ws, all_intrinsics, torch.from_numpy(frame_indices).float())
 
-        return self._preprocess(rgbs, masks, depths, c2ws, intrinsics, timesteps, has_mask)
+        result = self._preprocess(rgbs, masks, depths, c2ws, intrinsics, timesteps, has_mask)
+        result["sample_metadata"] = {
+            "scene_index": int(idx),
+            "scene_path": str(self.dataset.sample_list[idx]) if hasattr(self.dataset, "sample_list") else str(idx),
+            "frame_indices": torch.as_tensor(frame_indices).clone(),
+        }
+        return result
 
     def __getitem__(self, idx):
-        while True:
+        # QuerySplat can reproduce a sample without replaying preceding I/O,
+        # independent of worker assignment and prefetching.
+        if getattr(self.opt, "indexed_sampling", False):
+            seed = np.random.SeedSequence([self.opt.seed, getattr(self, "rng_epoch", 0), int(idx)])
+            self.rng = np.random.default_rng(seed)
+            self.generator.manual_seed(int(seed.generate_state(1, dtype=np.uint64)[0]))
+        max_attempts = getattr(self.opt, "max_sample_attempts", 32)
+        for attempt in range(max_attempts):
             try:
                 return self.get_item(idx)
-            except Exception:
-                idx = self.rng.integers(0, len(self.dataset))
+            except Exception as error:
+                import os
+                import warnings
+                warnings.warn(
+                    f"rank={os.environ.get('RANK', '0')} scene_index={idx} "
+                    f"attempt={attempt + 1}/{max_attempts}: {type(error).__name__}: {error}",
+                    RuntimeWarning,
+                )
+                if attempt + 1 == max_attempts:
+                    raise RuntimeError(f"Failed to load a sample after {max_attempts} attempts") from error
+                idx = int(self.rng.integers(0, len(self.dataset)))

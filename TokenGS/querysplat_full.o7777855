@@ -1,0 +1,43 @@
+
+Lmod is automatically replacing "nvidia/25.9" with "gcc-native/14".
+
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) cray-libsci/26.03.0     2) cray-mpich/9.1.0
+
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+step=1/300000 epoch=0 lr=5.000e-08 loss=1.588987 photo=0.315144 grad=0.450214
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+step=10/300000 epoch=0 lr=5.000e-07 loss=0.620406 photo=0.233673 grad=0.326081

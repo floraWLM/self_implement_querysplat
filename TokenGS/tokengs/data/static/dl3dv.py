@@ -175,7 +175,7 @@ class DL3DV10K:
                         discovered_sizes[folder] = img.size
                         if img.size == (self.resolution[1], self.resolution[0]):
                             return folder
-            except FileNotFoundError:
+            except (FileNotFoundError, KeyError):
                 continue
 
         raise ValueError(

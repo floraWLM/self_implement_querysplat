@@ -1,0 +1,443 @@
+==================================
+Job ID: 201354.sophia-pbs-01.lab.alcf.anl.gov
+Node: sophia-gpu-07
+GPUs: not set
+Started: Thu Nov  5 02:16:11 AM UTC 2026
+Output: /eagle/ideas/lemeng_wang/outputs/querysplat_sophia_full
+==================================
+No checkpoint found. Starting from step 0.
+NCCL version 2.26.2+cuda12.2
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712446:2715310 [3] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [4]mlx5_4:1/IB and [5]mlx5_5:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712446:2715310 [3] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [10]mlx5_10:1/IB and [11]mlx5_11:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712444:2715312 [1] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [4]mlx5_4:1/IB and [5]mlx5_5:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712444:2715312 [1] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [10]mlx5_10:1/IB and [11]mlx5_11:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712443:2715311 [0] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [4]mlx5_4:1/IB and [5]mlx5_5:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712443:2715311 [0] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [10]mlx5_10:1/IB and [11]mlx5_11:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712445:2715309 [2] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [4]mlx5_4:1/IB and [5]mlx5_5:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+
+[2026-11-05 02:18:14] sophia-gpu-07:2712445:2715309 [2] transport/net_ib.cc:543 NCCL WARN NET/IB : Attempted to merge incompatible devices: [10]mlx5_10:1/IB and [11]mlx5_11:1/RoCE. Try selecting NICs of only one link type using NCCL_IB_HCA
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+Setting up [LPIPS] perceptual loss: trunk [vgg], v[0.1], spatial [off]
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=VGG16_Weights.IMAGENET1K_V1`. You can also use `weights=VGG16_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+Loading model from: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/lpips/weights/v0.1/vgg.pth
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=7246 attempt=1/32: KeyError: "There is no item named '15d394359766bcf75acd532533e8fa4787839ff55f773a50074a40437c24d033/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+step=1/300000 epoch=0 lr=5.000e-08 loss=1.355076 photo=0.280354 grad=0.450067
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=8066 attempt=1/32: KeyError: "There is no item named '4b3a94b74f835affd907faa62bcb305e01aca382154f11729899b29afe16bba0/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8331 attempt=1/32: KeyError: "There is no item named '61283b88bc75372076ee2e4b53cd3b7570a48eac648f444a0701161e2024e06e/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/models/vggt_encoder.py:47: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  return torch.cuda.amp.autocast(enabled=False)
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=8250 attempt=1/32: KeyError: "There is no item named '5b0173bb312ae12ac1fea96e9038fd0ac391cd01df43216dc26adcbdb7ec492a/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=3938 attempt=1/32: ValueError: No 960x540 image folder found for f1750543f53c9fc21896448eb8e5c5075984488697f5d76d741025383d4ba170; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7235 attempt=1/32: KeyError: "There is no item named '151f9bb355e652ba3ba058be75a8f015013e7957ad18b2e1578bda5da610e3cd/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8553 attempt=1/32: KeyError: "There is no item named '723a0e2fee64cf1592e5c953891437e1009ad187e5e6c5bd4cb991d1157701f9/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=8497 attempt=1/32: KeyError: "There is no item named '6e3429a6f8b4419c39b7d10460f389e969694f682d1d57646cc1a629977abf75/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8699 attempt=1/32: KeyError: "There is no item named '7ccb2239adeb4134005e896a38c2202139657bd3a4ce4e5caeccc6637554508c/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8075 attempt=1/32: KeyError: "There is no item named '4cb9b1f1f55c8d740a8a50ce171cc4304f6b5571e1de02037bdbc630fe836563/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8035 attempt=1/32: KeyError: "There is no item named 'fef478650bf33defe96b866d02555d6b3c6d7e3fbf89f08ebdd353fc01b9e0aa/transforms.json' in the archive"
+  warnings.warn(
+step=10/300000 epoch=0 lr=5.000e-07 loss=0.766945 photo=0.252890 grad=0.417968
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=7954 attempt=1/32: KeyError: "There is no item named 'e57e2c89a8ee491da2229175658b9f3eb3ffc536511a6b03596730e79def9895/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=3314 attempt=2/32: ValueError: No 960x540 image folder found for 52447cfcb84d3f738dff58068ed5e5edca83e60de18473baf8aae38edbd57972; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7269 attempt=1/32: KeyError: "There is no item named '181599146a8385e559b0def3af4288bacb817a90ee181008b415a134ba7807ff/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=7655 attempt=1/32: KeyError: "There is no item named '354882b9c2a45efd03f3d984f96e3600615a4b966ec37fa407bc6d6974503d28/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8271 attempt=1/32: KeyError: "There is no item named '5c78ffe96dc7b84203dfc60a947ca399f81fa3482c0b374e36e27bb78d508d10/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=3416 attempt=1/32: ValueError: No 960x540 image folder found for 6a9f79c2363e972dfba9d35da831f8b622c74468f539df2bddda2d86b3853ae3; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=2820 attempt=1/32: ValueError: No 960x540 image folder found for d35be9870db6595a962942a0e73a2b7cc608bdfe5004c3c794bd107d2da0158d; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8303 attempt=1/32: KeyError: "There is no item named '5e8cba6b6716c79c693bfed26122cd126005fc6b484eb95c8c40714d06fd0995/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8329 attempt=1/32: KeyError: "There is no item named '611254332be55ef5f2740755aae5ae808af3e06dbc08fb2ebcca0530101c13c8/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=7788 attempt=1/32: KeyError: "There is no item named '40246486c335e651e228ece2873b63e92969b7df51ccd610d2ba93caa66938e1/transforms.json' in the archive"
+  warnings.warn(
+step=20/300000 epoch=0 lr=1.000e-06 loss=7.981019 photo=0.304647 grad=1.006408
+Saved checkpoint: /lus/eagle/projects/ideas/lemeng_wang/outputs/querysplat_sophia_full/latest.pt
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8647 attempt=1/32: KeyError: "There is no item named '7941dd96d3260401c9d61daa6e8fc50d1ce1526cf2ebf93faa6671402f1079f9/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7032 attempt=1/32: KeyError: "There is no item named '02fe6c1d45fc326f4b516118a1a45d45736b2df641a529812975d5e80e8d0335/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=7153 attempt=2/32: KeyError: "There is no item named '0cc0f5e30539fe5c340bdc99b0f2912823fbba2badfdc036597a53925410de96/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8516 attempt=3/32: KeyError: "There is no item named '6f88c5c5ec12acab96f2cd222c3028913454f5fd2ef999a182d0b826ce556aae/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=3554 attempt=1/32: ValueError: No 960x540 image folder found for 90c06ab59d8c6cf7aa9350b7b3e63d777b0ce9012f1c022dd00d2f662c2723b7; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7075 attempt=1/32: KeyError: "There is no item named '05caf3e4d39c41d254b4ea3d192c576f8ff9e9327781b5d0aecc9ae6b60cf2c5/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=2435 attempt=1/32: ValueError: No 960x540 image folder found for 82cee35693233fc8d272edd05811146f620d178ce45b8fa3f3e7a142a20d2161; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8480 attempt=1/32: KeyError: "There is no item named '6cd951a495cd0cefbc699c7ae9538185f2499394da9c2161e0cd8629cb8ff15c/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8675 attempt=1/32: KeyError: "There is no item named '7ab757d0d1f363374e9e5ed3894de256495eb896fe60fe7bdccde612b2cd8176/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8349 attempt=1/32: KeyError: "There is no item named '629a11a5c0d47b61fa19131067771dbff18f3797100bdd2574dbdc76d1a7405d/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7077 attempt=1/32: KeyError: "There is no item named '06101313c57212194000b74612182c8ac2b2949cfe5284ee555e6ff6836efa21/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=8687 attempt=1/32: KeyError: "There is no item named '7bc27f5295c18b0231bd56dc923714ec0927ca6427a604699a03efa48efdcff7/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=3953 attempt=1/32: ValueError: No 960x540 image folder found for f42f533e039495dc6fa16094386cc7e9907de1cd8c9459d75babccf3c99269df; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7887 attempt=1/32: KeyError: "There is no item named '47f5ca09a7be812d998957eb685a6b41f1beba91e1c490f9b980d68c17ccfb90/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7234 attempt=1/32: KeyError: "There is no item named '151cd2a62d611dbc1352c869e6a03f2029435efa4aa1fc0606a0eea0123e8c6d/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=3151 attempt=1/32: ValueError: No 960x540 image folder found for 26380923ea94c85b80e1d3897ee7e17a3d4e192c501b2c56874f89f2a2fd71f6; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=3414 attempt=2/32: ValueError: No 960x540 image folder found for 6a666f44c03c52b08b27f1be656661e5a2a15288705e14f49e780e75a1132477; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8379 attempt=3/32: KeyError: "There is no item named '6518d764c144ebab7cdb2092e9d486822dbe4e0af3683f5e138613456a5e08de/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8219 attempt=4/32: KeyError: "There is no item named '56d9405a7deea19a94c60f139dc593a92a965f3137c862aa68429b28963c86ce/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=3467 attempt=1/32: ValueError: No 960x540 image folder found for 7c555659543da4085fd747e027eb9047392e03f2c052eed97061c8cb35cb8fa1; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+step=30/300000 epoch=0 lr=1.500e-06 loss=4.472775 photo=0.237720 grad=1.030782
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=3379 attempt=1/32: ValueError: No 960x540 image folder found for 635d91d8cf7db30fe1eae9bf8102d61f3cf7ddacdc9185cff495cec17481d576; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=2941 attempt=2/32: ValueError: No 960x540 image folder found for f10ccb3ce53327af34a818ce6507bc6111ecc46db57079c8146599e3e3920553; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8427 attempt=1/32: KeyError: "There is no item named '68ec312cfe7eab2cf4da14cf9a5a78a86ee0e2ab650110aeda5dcb86889f06f6/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=7439 attempt=2/32: KeyError: "There is no item named '251ea04980949a8459cd74ba3f2c0d190b03ef113ce9987e3195e9bb5298da36/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=7725 attempt=1/32: KeyError: "There is no item named '3b883fb118ce336640051218d5e51cb5dc081326dfb82ee090a0dfe7fb421772/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8686 attempt=1/32: KeyError: "There is no item named '7bc0365dbdc4b640f18b318e00132751035470c5660a29f123e64e94655a3f42/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7696 attempt=1/32: KeyError: "There is no item named '38f050e7b96fcc447088bb23b4b25a5c0229231d9dbdffee51f21db1cf90fe32/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=7868 attempt=1/32: KeyError: "There is no item named '45dc413c3a2916d5724ec3379c37604888ad0d956747c8d6bb2a1f6b8486283d/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8202 attempt=1/32: KeyError: "There is no item named '55d2fc8cd0185a0d95275fb15765470ca6f52d12567a597b71165b04381a99d8/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=4970 attempt=1/32: ValueError: No 960x540 image folder found for f50b0310c140903dff7838cbd6eeee734a49949ce99e8535338fc268d3a66d8c; checked ('images', 'images_4'), found {'images_4': (160, 90)}
+  warnings.warn(
+step=40/300000 epoch=0 lr=2.000e-06 loss=2.596939 photo=0.282060 grad=0.945533
+Saved checkpoint: /lus/eagle/projects/ideas/lemeng_wang/outputs/querysplat_sophia_full/latest.pt
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=7150 attempt=1/32: KeyError: "There is no item named '0ca36ff4fd237723ddd87881cc464f5739f65b97d30b5cc5f0699cb1dfdd1f48/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=1 scene_index=8670 attempt=1/32: KeyError: "There is no item named '7a73c7139b60c9b32c606df002440a39424ce7ec29d863695a0ce156e753dcaa/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=3493 attempt=1/32: ValueError: No 960x540 image folder found for 834161ec0b3821ff44939655a136a37d084746c7d337a7bcf98332d14d3fbb8b; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8502 attempt=2/32: KeyError: "There is no item named '6eab7a0d4ee451a8c56973c035a13b505aa5d7b4b92e138f0f1b7540082a7aab/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=8274 attempt=1/32: KeyError: "There is no item named '5cc6878627848fa545cd99107768e0d4678ff4d82690cff3e2f27bb16be7fe8d/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=8640 attempt=2/32: KeyError: "There is no item named '78c6a2620dd5d98f1ab77f9dda0b8831d610b1e36e9d0678667c249c7c154af5/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8088 attempt=1/32: KeyError: "There is no item named '4ddfe9311dce4d77cd7c5ca002a1d45e2f12e1d58da0691942976260ce11114d/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=7210 attempt=1/32: KeyError: "There is no item named '125007bc4fad327423b3dc214a3e762589940f2c6c5f98ecafe45a3bfa31e4fd/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=7732 attempt=1/32: KeyError: "There is no item named '3c2319717610c608a20a8d44515153511d32493df6a4c099782ebafcd93fde94/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=0 scene_index=8311 attempt=2/32: KeyError: "There is no item named '5f295601dd59cc6c24f82d194026f86930198c672a9acbec535a27e1f38453eb/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=2 scene_index=3650 attempt=2/32: ValueError: No 960x540 image folder found for a8a848e57e3e74a18107d8b0166323ede27e80bd9a7ec83cca17bd77bcaf4588; checked ('images', 'images_4'), found {'images_4': (270, 480)}
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=7632 attempt=1/32: KeyError: "There is no item named '343607ce144f9d9edec20a9299d26044c4bbf7ac3b858b292232fef0f51929c4/transforms.json' in the archive"
+  warnings.warn(
+/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/tokengs/data/provider.py:429: RuntimeWarning: rank=3 scene_index=3492 attempt=1/32: ValueError: No 960x540 image folder found for 831517e71ca6b5db6a51843744307e126e4937c8378f61a8f83295399d6e6ed8; checked ('images', 'images_4'), found {'images_4': (480, 270)}
+  warnings.warn(
+rank=1 FAILED forward: estimated Sim(3) scale must be finite and positive
+[rank3]:[E1105 02:51:14.623195061 ProcessGroupNCCL.cpp:632] [Rank 3] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800008 milliseconds before timing out.
+[rank2]:[E1105 02:51:14.625907509 ProcessGroupNCCL.cpp:632] [Rank 2] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800081 milliseconds before timing out.
+[rank0]:[E1105 02:51:14.645549801 ProcessGroupNCCL.cpp:632] [Rank 0] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800016 milliseconds before timing out.
+[rank3]:[E1105 02:51:14.670869356 ProcessGroupNCCL.cpp:2268] [PG ID 0 PG GUID 0(default_pg) Rank 3]  failure detected by watchdog at work sequence id: 3744 PG status: last enqueued work: 3819, last completed work: 3743
+[rank0]:[E1105 02:51:14.670874055 ProcessGroupNCCL.cpp:2268] [PG ID 0 PG GUID 0(default_pg) Rank 0]  failure detected by watchdog at work sequence id: 3744 PG status: last enqueued work: 3819, last completed work: 3743
+[rank3]:[E1105 02:51:14.670888612 ProcessGroupNCCL.cpp:670] Stack trace of the failed collective not found, potentially because FlightRecorder is disabled. You can enable it by setting TORCH_NCCL_TRACE_BUFFER_SIZE to a non-zero value.
+[rank0]:[E1105 02:51:14.670900224 ProcessGroupNCCL.cpp:670] Stack trace of the failed collective not found, potentially because FlightRecorder is disabled. You can enable it by setting TORCH_NCCL_TRACE_BUFFER_SIZE to a non-zero value.
+[rank2]:[E1105 02:51:14.670922126 ProcessGroupNCCL.cpp:2268] [PG ID 0 PG GUID 0(default_pg) Rank 2]  failure detected by watchdog at work sequence id: 3744 PG status: last enqueued work: 3819, last completed work: 3743
+[rank0]:[E1105 02:51:14.670935832 ProcessGroupNCCL.cpp:2103] [PG ID 0 PG GUID 0(default_pg) Rank 0] First PG on this rank to signal dumping.
+[rank2]:[E1105 02:51:14.670950329 ProcessGroupNCCL.cpp:670] Stack trace of the failed collective not found, potentially because FlightRecorder is disabled. You can enable it by setting TORCH_NCCL_TRACE_BUFFER_SIZE to a non-zero value.
+[rank3]:[E1105 02:51:14.670938076 ProcessGroupNCCL.cpp:2103] [PG ID 0 PG GUID 0(default_pg) Rank 3] First PG on this rank to signal dumping.
+[rank2]:[E1105 02:51:14.671043124 ProcessGroupNCCL.cpp:2103] [PG ID 0 PG GUID 0(default_pg) Rank 2] First PG on this rank to signal dumping.
+[rank2]:[E1105 02:51:14.995015558 ProcessGroupNCCL.cpp:1743] [PG ID 0 PG GUID 0(default_pg) Rank 2] Received a dump signal due to a collective timeout from this local rank and we will try our best to dump the debug info. Last enqueued NCCL work: 3819, last completed NCCL work: 3743.This is most likely caused by incorrect usages of collectives, e.g., wrong sizes used across ranks, the order of collectives is not same for all ranks or the scheduled collective, for some reason, didn't run. Additionally, this can be caused by GIL deadlock or other reasons such as network errors or bugs in the communications library (e.g. NCCL), etc. 
+[rank2]:[E1105 02:51:14.995267153 ProcessGroupNCCL.cpp:1533] [PG ID 0 PG GUID 0(default_pg) Rank 2] ProcessGroupNCCL preparing to dump debug info. Include stack trace: 1
+[rank3]:[E1105 02:51:14.006342060 ProcessGroupNCCL.cpp:1743] [PG ID 0 PG GUID 0(default_pg) Rank 3] Received a dump signal due to a collective timeout from this local rank and we will try our best to dump the debug info. Last enqueued NCCL work: 3819, last completed NCCL work: 3743.This is most likely caused by incorrect usages of collectives, e.g., wrong sizes used across ranks, the order of collectives is not same for all ranks or the scheduled collective, for some reason, didn't run. Additionally, this can be caused by GIL deadlock or other reasons such as network errors or bugs in the communications library (e.g. NCCL), etc. 
+[rank3]:[E1105 02:51:14.006579859 ProcessGroupNCCL.cpp:1533] [PG ID 0 PG GUID 0(default_pg) Rank 3] ProcessGroupNCCL preparing to dump debug info. Include stack trace: 1
+[rank0]:[E1105 02:51:15.462217047 ProcessGroupNCCL.cpp:1743] [PG ID 0 PG GUID 0(default_pg) Rank 0] Received a dump signal due to a collective timeout from this local rank and we will try our best to dump the debug info. Last enqueued NCCL work: 3819, last completed NCCL work: 3743.This is most likely caused by incorrect usages of collectives, e.g., wrong sizes used across ranks, the order of collectives is not same for all ranks or the scheduled collective, for some reason, didn't run. Additionally, this can be caused by GIL deadlock or other reasons such as network errors or bugs in the communications library (e.g. NCCL), etc. 
+[rank0]:[E1105 02:51:15.462411955 ProcessGroupNCCL.cpp:1533] [PG ID 0 PG GUID 0(default_pg) Rank 0] ProcessGroupNCCL preparing to dump debug info. Include stack trace: 1
+[rank2]:[E1105 02:51:15.769968886 ProcessGroupNCCL.cpp:684] [Rank 2] Some NCCL operations have failed or timed out. Due to the asynchronous nature of CUDA kernels, subsequent GPU operations might run on corrupted/incomplete data.
+[rank2]:[E1105 02:51:15.769985377 ProcessGroupNCCL.cpp:698] [Rank 2] To avoid data inconsistency, we are taking the entire process down.
+[rank2]:[E1105 02:51:15.770785076 ProcessGroupNCCL.cpp:1896] [PG ID 0 PG GUID 0(default_pg) Rank 2] Process group watchdog thread terminated with exception: [Rank 2] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800081 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:635 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x1517a0e255e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x23d (0x1517a1c539fd in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0xc80 (0x1517a1c55780 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x1517a1c56e8d in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xdf0e6 (0x1517921050e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #5: <unknown function> + 0x8b699 (0x151812a8b699 in /lib64/libc.so.6)
+frame #6: <unknown function> + 0x1108a0 (0x151812b108a0 in /lib64/libc.so.6)
+
+terminate called after throwing an instance of 'c10::DistBackendError'
+  what():  [PG ID 0 PG GUID 0(default_pg) Rank 2] Process group watchdog thread terminated with exception: [Rank 2] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800081 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:635 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x1517a0e255e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x23d (0x1517a1c539fd in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0xc80 (0x1517a1c55780 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x1517a1c56e8d in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xdf0e6 (0x1517921050e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #5: <unknown function> + 0x8b699 (0x151812a8b699 in /lib64/libc.so.6)
+frame #6: <unknown function> + 0x1108a0 (0x151812b108a0 in /lib64/libc.so.6)
+
+Exception raised from ncclCommWatchdog at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1902 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x1517a0e255e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0xcc7a4e (0x1517a1c25a4e in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: <unknown function> + 0x9165ed (0x1517a18745ed in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: <unknown function> + 0xdf0e6 (0x1517921050e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #4: <unknown function> + 0x8b699 (0x151812a8b699 in /lib64/libc.so.6)
+frame #5: <unknown function> + 0x1108a0 (0x151812b108a0 in /lib64/libc.so.6)
+
+Fatal Python error: Aborted
+
+Thread 0x00001516cb348640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001516d43fe640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001516d45ff640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001516e6bde640 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000151812c47780 (most recent call first):
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py", line 2810 in all_reduce
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/c10d_logger.py", line 81 in wrapper
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 134 in reduce_scalars
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 379 in main
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 460 in <module>
+
+Extension modules: numpy.core._multiarray_umath, numpy.core._multiarray_tests, numpy.linalg._umath_linalg, numpy.fft._pocketfft_internal, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._mt19937, numpy.random.mtrand, numpy.random._philox, numpy.random._pcg64, numpy.random._sfc64, numpy.random._generator, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, PIL._imaging, PIL._imagingft, yaml._yaml, _cyutility, scipy._cyutility, scipy._lib._ccallback_c, scipy.ndimage._nd_image, scipy.ndimage._rank_filter_1d, scipy.special._ufuncs_cxx, scipy.special._ellip_harm_2, scipy.special._special_ufuncs, scipy.special._gufuncs, scipy.special._ufuncs, scipy.special._specfun, scipy.special._comb, _ni_label, scipy.ndimage._ni_label, PIL._imagingmath (total: 42)
+[rank3]:[E1105 02:51:16.374532349 ProcessGroupNCCL.cpp:684] [Rank 3] Some NCCL operations have failed or timed out. Due to the asynchronous nature of CUDA kernels, subsequent GPU operations might run on corrupted/incomplete data.
+[rank3]:[E1105 02:51:16.374549462 ProcessGroupNCCL.cpp:698] [Rank 3] To avoid data inconsistency, we are taking the entire process down.
+[rank3]:[E1105 02:51:16.375328572 ProcessGroupNCCL.cpp:1896] [PG ID 0 PG GUID 0(default_pg) Rank 3] Process group watchdog thread terminated with exception: [Rank 3] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800008 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:635 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x153e14c135e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x23d (0x153e15a419fd in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0xc80 (0x153e15a43780 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x153e15a44e8d in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xdf0e6 (0x153e05ef30e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #5: <unknown function> + 0x8b699 (0x153e8688b699 in /lib64/libc.so.6)
+frame #6: <unknown function> + 0x1108a0 (0x153e869108a0 in /lib64/libc.so.6)
+
+terminate called after throwing an instance of 'c10::DistBackendError'
+  what():  [PG ID 0 PG GUID 0(default_pg) Rank 3] Process group watchdog thread terminated with exception: [Rank 3] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800008 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:635 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x153e14c135e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x23d (0x153e15a419fd in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0xc80 (0x153e15a43780 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x153e15a44e8d in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xdf0e6 (0x153e05ef30e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #5: <unknown function> + 0x8b699 (0x153e8688b699 in /lib64/libc.so.6)
+frame #6: <unknown function> + 0x1108a0 (0x153e869108a0 in /lib64/libc.so.6)
+
+Exception raised from ncclCommWatchdog at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1902 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x153e14c135e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0xcc7a4e (0x153e15a13a4e in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: <unknown function> + 0x9165ed (0x153e156625ed in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: <unknown function> + 0xdf0e6 (0x153e05ef30e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #4: <unknown function> + 0x8b699 (0x153e8688b699 in /lib64/libc.so.6)
+frame #5: <unknown function> + 0x1108a0 (0x153e869108a0 in /lib64/libc.so.6)
+
+Fatal Python error: Aborted
+
+Thread 0x0000153d3f147640 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000153d3f348640 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000153d483ff640 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000153d5abde640 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000153e86a3d780 (most recent call first):
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py", line 2810 in all_reduce
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/c10d_logger.py", line 81 in wrapper
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 134 in reduce_scalars
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 379 in main
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 460 in <module>
+
+Extension modules: numpy.core._multiarray_umath, numpy.core._multiarray_tests, numpy.linalg._umath_linalg, numpy.fft._pocketfft_internal, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._mt19937, numpy.random.mtrand, numpy.random._philox, numpy.random._pcg64, numpy.random._sfc64, numpy.random._generator, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, PIL._imaging, PIL._imagingft, yaml._yaml, _cyutility, scipy._cyutility, scipy._lib._ccallback_c, scipy.ndimage._nd_image, scipy.ndimage._rank_filter_1d, scipy.special._ufuncs_cxx, scipy.special._ellip_harm_2, scipy.special._special_ufuncs, scipy.special._gufuncs, scipy.special._ufuncs, scipy.special._specfun, scipy.special._comb, _ni_label, scipy.ndimage._ni_label, PIL._imagingmath (total: 42)
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 460, in <module>
+[rank1]:     main()
+[rank1]:   File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 353, in main
+[rank1]:     output = training_graph(input_normalized, input_raw, images_all)
+[rank1]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1637, in forward
+[rank1]:     else self._run_ddp_forward(*inputs, **kwargs)
+[rank1]:          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1464, in _run_ddp_forward
+[rank1]:     return self.module(*inputs, **kwargs)  # type: ignore[index]
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+[rank1]:     return self._call_impl(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+[rank1]:     return forward_call(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/training/multiscene.py", line 78, in forward
+[rank1]:     return forward_querysplat_training(
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/training/dual_branch_forward.py", line 215, in forward_querysplat_training
+[rank1]:     self_calibration = forward_self_calibrated_vgm(
+[rank1]:                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/training/self_calibration.py", line 236, in forward_self_calibrated_vgm
+[rank1]:     transform = estimate_sim3_from_cameras(
+[rank1]:                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/training/self_calibration.py", line 130, in estimate_sim3_from_cameras
+[rank1]:     raise ValueError("estimated Sim(3) scale must be finite and positive")
+[rank1]: ValueError: estimated Sim(3) scale must be finite and positive
+[rank0]:[E1105 02:51:16.460991477 ProcessGroupNCCL.cpp:684] [Rank 0] Some NCCL operations have failed or timed out. Due to the asynchronous nature of CUDA kernels, subsequent GPU operations might run on corrupted/incomplete data.
+[rank0]:[E1105 02:51:16.461021714 ProcessGroupNCCL.cpp:698] [Rank 0] To avoid data inconsistency, we are taking the entire process down.
+rank=0 FAILED metrics.all_reduce: NCCL communicator was aborted on rank 0. 
+[rank0]:[E1105 02:51:16.461822545 ProcessGroupNCCL.cpp:1896] [PG ID 0 PG GUID 0(default_pg) Rank 0] Process group watchdog thread terminated with exception: [Rank 0] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800016 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:635 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x15244c54c5e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x23d (0x15244d37a9fd in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0xc80 (0x15244d37c780 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x15244d37de8d in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xdf0e6 (0x15243d82c0e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #5: <unknown function> + 0x8b699 (0x1524be08b699 in /lib64/libc.so.6)
+frame #6: <unknown function> + 0x1108a0 (0x1524be1108a0 in /lib64/libc.so.6)
+
+terminate called after throwing an instance of 'c10::DistBackendError'
+  what():  [PG ID 0 PG GUID 0(default_pg) Rank 0] Process group watchdog thread terminated with exception: [Rank 0] Watchdog caught collective operation timeout: WorkNCCL(SeqNum=3744, OpType=ALLREDUCE, NumelIn=1703936, NumelOut=1703936, Timeout(ms)=1800000) ran for 1800016 milliseconds before timing out.
+Exception raised from checkTimeout at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:635 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x15244c54c5e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: c10d::ProcessGroupNCCL::WorkNCCL::checkTimeout(std::optional<std::chrono::duration<long, std::ratio<1l, 1000l> > >) + 0x23d (0x15244d37a9fd in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: c10d::ProcessGroupNCCL::watchdogHandler() + 0xc80 (0x15244d37c780 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: c10d::ProcessGroupNCCL::ncclCommWatchdog() + 0x14d (0x15244d37de8d in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xdf0e6 (0x15243d82c0e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #5: <unknown function> + 0x8b699 (0x1524be08b699 in /lib64/libc.so.6)
+frame #6: <unknown function> + 0x1108a0 (0x1524be1108a0 in /lib64/libc.so.6)
+
+Exception raised from ncclCommWatchdog at /pytorch/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1902 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >) + 0x98 (0x15244c54c5e8 in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0xcc7a4e (0x15244d34ca4e in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #2: <unknown function> + 0x9165ed (0x15244cf9b5ed in /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/lib/libtorch_cuda.so)
+frame #3: <unknown function> + 0xdf0e6 (0x15243d82c0e6 in /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/../lib/libstdc++.so.6)
+frame #4: <unknown function> + 0x8b699 (0x1524be08b699 in /lib64/libc.so.6)
+frame #5: <unknown function> + 0x1108a0 (0x1524be1108a0 in /lib64/libc.so.6)
+
+Fatal Python error: Aborted
+
+Thread 0x00001521bc3fd640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001521bc5fe640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001521bc7ff640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001523931fe640 (most recent call first):
+  <no Python frame>
+
+Thread 0x00001524be376780 (most recent call first):
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/distributed_c10d.py", line 2135 in destroy_process_group
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 456 in main
+  File "/home/lemeng_wang/Documents/tokenNHT/self_implement_querysplat/TokenGS/scripts/train_querysplat.py", line 460 in <module>
+
+Extension modules: numpy.core._multiarray_umath, numpy.core._multiarray_tests, numpy.linalg._umath_linalg, numpy.fft._pocketfft_internal, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._mt19937, numpy.random.mtrand, numpy.random._philox, numpy.random._pcg64, numpy.random._sfc64, numpy.random._generator, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, PIL._imaging, PIL._imagingft, yaml._yaml, _cyutility, scipy._cyutility, scipy._lib._ccallback_c, scipy.ndimage._nd_image, scipy.ndimage._rank_filter_1d, scipy.special._ufuncs_cxx, scipy.special._ellip_harm_2, scipy.special._special_ufuncs, scipy.special._gufuncs, scipy.special._ufuncs, scipy.special._specfun, scipy.special._comb, _ni_label, scipy.ndimage._ni_label, PIL._imagingmath (total: 42)
+W1105 02:51:21.736000 2709377 /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 2712444 closing signal SIGTERM
+W1105 02:51:21.740000 2709377 /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 2712445 closing signal SIGTERM
+W1105 02:51:21.740000 2709377 /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 2712446 closing signal SIGTERM
+E1105 02:51:23.972000 2709377 /lus/eagle/projects/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: -6) local_rank: 0 (pid: 2712443) of binary: /eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/python
+Traceback (most recent call last):
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/bin/torchrun", line 6, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 355, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/run.py", line 892, in main
+    run(args)
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/run.py", line 883, in run
+    elastic_launch(
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 139, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/eagle/ideas/lemeng_wang/miniconda3/envs/tokengs/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 270, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+========================================================
+scripts/train_querysplat.py FAILED
+--------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+--------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-11-05_02:51:21
+  host      : sophia-gpu-07.lab.alcf.anl.gov
+  rank      : 0 (local_rank: 0)
+  exitcode  : -6 (pid: 2712443)
+  error_file: <N/A>
+  traceback : Signal 6 (SIGABRT) received by PID 2712443
+========================================================

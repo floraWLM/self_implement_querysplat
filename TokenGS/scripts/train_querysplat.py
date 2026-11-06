@@ -5,13 +5,17 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from contextlib import nullcontext
+import time
+import faulthandler
+from datetime import timedelta
+from contextlib import nullcontext, contextmanager
 from pathlib import Path
 from typing import Any
 
 import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel
+from torch.distributed.elastic.multiprocessing.errors import record
 
 from scripts.inspect_dual_branch_forward import BASE_QUERY_COUNT, save_rgb_grid
 from scripts.models.querysplat import QuerySplat
@@ -36,6 +40,10 @@ from scripts.training import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train QuerySplat on dynamically sampled DL3DV scenes")
+    parser.add_argument("--diagnostics", action="store_true", help="Flush per-rank phase timings")
+    parser.add_argument("--diagnostic-cuda-sync", action="store_true", help="Synchronize CUDA at phase ends (slower)")
+    parser.add_argument("--stack-dump-seconds", type=int, default=0, help="Repeated Python stack dumps for stalls")
+    parser.add_argument("--distributed-timeout-seconds", type=int, default=1800)
     parser.add_argument("--data-root", type=Path, required=True)
     parser.add_argument(
         "--config", type=Path,
@@ -72,6 +80,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_args(args: argparse.Namespace) -> None:
+    if args.distributed_timeout_seconds <= 0 or args.stack_dump_seconds < 0:
+        raise ValueError("timeout must be positive and stack dump interval non-negative")
     if args.num_input_views != 4:
         raise ValueError("Step 8 is the four-input-view, 1024-query base stage")
     if args.num_supervision_views < 1:
@@ -98,7 +108,7 @@ def validate_args(args: argparse.Namespace) -> None:
         raise ValueError("invalid LPIPS schedule")
 
 
-def setup_distributed() -> tuple[int, int, int, torch.device]:
+def setup_distributed(timeout_seconds: int = 1800) -> tuple[int, int, int, torch.device]:
     world_size = int(os.environ.get("WORLD_SIZE", "1"))
     rank = int(os.environ.get("RANK", "0"))
     local_rank = int(os.environ.get("LOCAL_RANK", "0"))
@@ -109,7 +119,7 @@ def setup_distributed() -> tuple[int, int, int, torch.device]:
     torch.cuda.set_device(local_rank)
     device = torch.device("cuda", local_rank)
     if world_size > 1:
-        dist.init_process_group(backend="nccl", init_method="env://")
+        dist.init_process_group(backend="nccl", init_method="env://", timeout=timedelta(seconds=timeout_seconds))
     return rank, local_rank, world_size, device
 
 
@@ -147,10 +157,44 @@ def restore_rank_rng_state(states: list[dict[str, torch.Tensor]], rank: int, dev
     torch.cuda.set_rng_state(states[rank]["cuda"], device)
 
 
+@record
 def main() -> None:
     args = parse_args()
     validate_args(args)
-    rank, local_rank, world_size, device = setup_distributed()
+    if args.stack_dump_seconds:
+        faulthandler.dump_traceback_later(args.stack_dump_seconds, repeat=True)
+    rank, local_rank, world_size, device = setup_distributed(args.distributed_timeout_seconds)
+    started = time.monotonic()
+    global_step = 0
+
+    @contextmanager
+    def phase(name):
+        begin = time.monotonic()
+        if args.diagnostics:
+            print(f"rank={rank} elapsed={begin-started:.3f}s step={global_step} BEGIN {name}", flush=True)
+        try:
+            yield
+            if args.diagnostic_cuda_sync:
+                torch.cuda.synchronize(device)
+        except BaseException as error:
+            print(f"rank={rank} FAILED {name}: {error}", flush=True)
+            raise
+        else:
+            if args.diagnostics:
+                print(f"rank={rank} elapsed={time.monotonic()-started:.3f}s END {name} duration={time.monotonic()-begin:.3f}s", flush=True)
+
+    def batches(dataloader):
+        with phase("loader.iter"):
+            iterator = iter(dataloader)
+        index = 0
+        while True:
+            with phase(f"loader.next batch={index}"):
+                try:
+                    batch = next(iterator)
+                except StopIteration:
+                    return
+            yield index, batch
+            index += 1
     is_main = rank == 0
     try:
         torch.manual_seed(args.seed)
@@ -166,7 +210,8 @@ def main() -> None:
             num_input_views=args.num_input_views,
             num_gs_tokens=BASE_QUERY_COUNT,
         )
-        model = QuerySplat(options).to(device).train()
+        with phase("startup.model"):
+            model = QuerySplat(options).to(device).train()
         optimizer = build_adamw(
             model,
             OptimizerConfig(
@@ -203,26 +248,32 @@ def main() -> None:
         global_step = 0
         resume_rng_states = None
         if args.resume is not None:
-            global_step, extra = load_training_checkpoint(
-                args.resume.expanduser().resolve(), model, optimizer, scheduler, ema
-            )
+            with phase('resume.load'):
+                global_step, extra = load_training_checkpoint(
+                    args.resume.expanduser().resolve(), model, optimizer, scheduler, ema,
+                    restore_rng=False,
+                )
             if any(extra.get(key) != value for key, value in resume_contract.items()):
                 raise ValueError("resume checkpoint does not match the current training contract")
+            # Older checkpoints used sequential provider RNG and require replay.
+            loader.dataset.opt.indexed_sampling = extra.get("sampling_version") == 1
             resume_rng_states = extra["rank_rng_states"]
             if is_main:
-                print(f"Resumed at global step {global_step}")
+                print(f"Resumed at global step {global_step}", flush=True)
         if global_step > args.total_steps:
             raise ValueError("checkpoint step exceeds total_steps")
 
+        resume_contract["sampling_version"] = 1 if loader.dataset.opt.indexed_sampling else 0
         training_graph = QuerySplatTrainingModule(model)
         if world_size > 1:
-            training_graph = DistributedDataParallel(
-                training_graph,
-                device_ids=[local_rank],
-                output_device=local_rank,
-                broadcast_buffers=False,
-                find_unused_parameters=False,
-            )
+            with phase("startup.ddp"):
+                training_graph = DistributedDataParallel(
+                    training_graph,
+                    device_ids=[local_rank],
+                    output_device=local_rank,
+                    broadcast_buffers=False,
+                    find_unused_parameters=False,
+                )
         loss_config = QuerySplatLossConfig(
             lambda_ssim=0.2,
             lambda_visibility=1.0,
@@ -241,7 +292,8 @@ def main() -> None:
             max_gaussian_chamfer_points=args.max_gaussian_chamfer_points,
             chamfer_chunk_size=args.chamfer_chunk_size,
         )
-        lpips_model = build_lpips_vgg(device)
+        with phase("startup.lpips"):
+            lpips_model = build_lpips_vgg(device)
         # Restore only after all module construction, which may consume RNG.
         if resume_rng_states is None:
             torch.manual_seed(args.seed + rank)
@@ -261,7 +313,8 @@ def main() -> None:
             (workspace / "config.json").write_text(
                 json.dumps(vars(args), default=str, indent=2) + "\n", encoding="utf-8"
             )
-        barrier(world_size)
+        with phase("startup.barrier"):
+            barrier(world_size)
 
         def precision_context():
             return (
@@ -274,48 +327,66 @@ def main() -> None:
         validated_loader_contract = False
         while global_step < args.total_steps:
             set_dl3dv_epoch(loader, epoch)
-            for batch_index, loader_batch in enumerate(loader.dataloader):
-                if batch_index < offset:
+            fast_resume = loader.dataset.opt.indexed_sampling
+            loader.sampler.start_index = offset if fast_resume else 0
+            if args.diagnostics:
+                print(f"rank={rank} epoch={epoch} step={global_step} offset={offset} fast_resume={fast_resume}", flush=True)
+            for batch_index, loader_batch in batches(loader.dataloader):
+                if not fast_resume and batch_index < offset:
                     continue
-                image_batch = prepare_querysplat_images(
-                    loader_batch,
-                    args.num_input_views,
-                    validate_provider_contract=not validated_loader_contract,
-                )
-                validated_loader_contract = True
-                images_all = torch.cat(
-                    [image_batch.input_raw, image_batch.supervision_images], dim=1
-                ).to(device, non_blocking=True)
-                input_raw = image_batch.input_raw.to(device, non_blocking=True)
-                input_normalized = image_batch.input_normalized.to(device, non_blocking=True)
+                with phase('batch.prepare_and_transfer'):
+                    image_batch = prepare_querysplat_images(
+                        loader_batch,
+                        args.num_input_views,
+                        validate_provider_contract=not validated_loader_contract,
+                    )
+                    validated_loader_contract = True
+                    images_all = torch.cat(
+                        [image_batch.input_raw, image_batch.supervision_images], dim=1
+                    ).to(device, non_blocking=True)
+                    input_raw = image_batch.input_raw.to(device, non_blocking=True)
+                    input_normalized = image_batch.input_normalized.to(device, non_blocking=True)
 
                 model.train()
                 optimizer.zero_grad(set_to_none=True)
                 learning_rate = optimizer.param_groups[0]["lr"]
-                with precision_context():
-                    output = training_graph(input_normalized, input_raw, images_all)
-                losses = compute_querysplat_losses(
-                    output,
-                    step=global_step,
-                    config=loss_config,
-                    znear=options.znear,
-                    zfar=options.zfar,
-                    lpips_model=lpips_model,
-                )
+                with phase('forward'):
+                    try:
+                        with precision_context():
+                            output = training_graph(input_normalized, input_raw, images_all)
+                    except Exception as error:
+                        error.add_note(
+                            f"rank={rank} step={global_step} epoch={epoch} batch={batch_index}; "
+                            f"num_input_views={args.num_input_views}; "
+                            f"sample_metadata={loader_batch.get('sample_metadata', 'unavailable')}"
+                        )
+                        raise
+                with phase('loss'):
+                    losses = compute_querysplat_losses(
+                        output,
+                        step=global_step,
+                        config=loss_config,
+                        znear=options.znear,
+                        zfar=options.zfar,
+                        lpips_model=lpips_model,
+                    )
                 if not torch.isfinite(losses["loss"]):
                     raise RuntimeError(f"rank {rank}: non-finite loss at step {global_step}")
-                losses["loss"].backward()
-                grad_norm = torch.nn.utils.clip_grad_norm_(
-                    trainable_parameters, max_norm=args.gradient_clip
-                )
-                if not torch.isfinite(grad_norm):
-                    raise RuntimeError(f"rank {rank}: non-finite gradient at step {global_step}")
-                optimizer.step()
-                scheduler.step()
-                ema.update(model)
+                with phase('backward'):
+                    losses["loss"].backward()
+                with phase('optimizer.scheduler.ema'):
+                    grad_norm = torch.nn.utils.clip_grad_norm_(
+                        trainable_parameters, max_norm=args.gradient_clip
+                    )
+                    if not torch.isfinite(grad_norm):
+                        raise RuntimeError(f"rank {rank}: non-finite gradient at step {global_step}")
+                    optimizer.step()
+                    scheduler.step()
+                    ema.update(model)
                 global_step += 1
 
-                averaged = reduce_scalars(losses, world_size)
+                with phase('metrics.all_reduce'):
+                    averaged = reduce_scalars(losses, world_size)
                 record = {
                     "step": global_step,
                     "epoch": epoch,
@@ -323,45 +394,50 @@ def main() -> None:
                     "grad_norm_before_clip_rank0": float(grad_norm.detach().float().cpu()),
                     **averaged,
                 }
-                if is_main:
-                    with metrics_path.open("a", encoding="utf-8") as stream:
-                        stream.write(json.dumps(record) + "\n")
-                    if global_step == 1 or global_step % args.log_every == 0:
-                        print(
-                            f"step={global_step}/{args.total_steps} epoch={epoch} "
-                            f"lr={learning_rate:.3e} loss={averaged['loss']:.6f} "
-                            f"photo={averaged['loss_photo']:.6f} "
-                            f"grad={record['grad_norm_before_clip_rank0']:.6f}"
-                        )
-                    if global_step == 1 or global_step % args.image_every == 0:
-                        save_rgb_grid(
-                            output.render_results["images_pred"],
-                            images_dir / f"pred_{global_step:07d}.png",
-                        )
-                        save_rgb_grid(
-                            output.supervision_images,
-                            images_dir / f"target_{global_step:07d}.png",
-                        )
+                with phase('metrics_and_images'):
+                    if is_main:
+                        with metrics_path.open("a", encoding="utf-8") as stream:
+                            stream.write(json.dumps(record) + "\n")
+                        if global_step == 1 or global_step % args.log_every == 0:
+                            print(
+                                f"step={global_step}/{args.total_steps} epoch={epoch} "
+                                f"lr={learning_rate:.3e} loss={averaged['loss']:.6f} "
+                                f"photo={averaged['loss_photo']:.6f} "
+                                f"grad={record['grad_norm_before_clip_rank0']:.6f}", flush=True
+                            )
+                        if global_step == 1 or global_step % args.image_every == 0:
+                            save_rgb_grid(
+                                output.render_results["images_pred"],
+                                images_dir / f"pred_{global_step:07d}.png",
+                            )
+                            save_rgb_grid(
+                                output.supervision_images,
+                                images_dir / f"target_{global_step:07d}.png",
+                            )
 
                 should_checkpoint = (
                     global_step % args.checkpoint_every == 0
                     or global_step == args.total_steps
                 )
                 if should_checkpoint:
-                    rank_rng_states = gather_rng_states(device, world_size)
-                    barrier(world_size)
-                    if is_main:
-                        save_training_checkpoint(
-                            checkpoint_path,
-                            model,
-                            optimizer,
-                            scheduler,
-                            ema,
-                            global_step=global_step,
-                            extra={**resume_contract, "rank_rng_states": rank_rng_states},
-                        )
-                        print(f"Saved checkpoint: {checkpoint_path}")
-                    barrier(world_size)
+                    with phase('checkpoint.gather_rng'):
+                        rank_rng_states = gather_rng_states(device, world_size)
+                    with phase("checkpoint.pre_write_barrier"):
+                        barrier(world_size)
+                    with phase('checkpoint.write'):
+                        if is_main:
+                            save_training_checkpoint(
+                                checkpoint_path,
+                                model,
+                                optimizer,
+                                scheduler,
+                                ema,
+                                global_step=global_step,
+                                extra={**resume_contract, "rank_rng_states": rank_rng_states},
+                            )
+                            print(f"Saved checkpoint: {checkpoint_path}", flush=True)
+                    with phase("checkpoint.post_write_barrier"):
+                        barrier(world_size)
                 if global_step >= args.total_steps:
                     break
             epoch += 1
@@ -381,8 +457,17 @@ def main() -> None:
                 json.dumps(summary, indent=2) + "\n", encoding="utf-8"
             )
             print(json.dumps(summary, indent=2))
-        barrier(world_size)
-    finally:
+        with phase("shutdown.barrier"):
+            barrier(world_size)
+    except BaseException:
+        # Do not wait for NCCL teardown while peers are blocked in collectives.
+        # Let the exception reach torchrun so it can terminate the other ranks.
+        if args.stack_dump_seconds:
+            faulthandler.cancel_dump_traceback_later()
+        raise
+    else:
+        if args.stack_dump_seconds:
+            faulthandler.cancel_dump_traceback_later()
         if dist.is_available() and dist.is_initialized():
             dist.destroy_process_group()
 

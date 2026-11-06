@@ -123,6 +123,77 @@ def decode_and_render_from_self_calibration(
     )
     supervision_images = images_all[:, num_input_views:]
     render_results = model.render_gaussians(gaussians, supervision_decoder)
+
+
+    # # Temporary debugging: inspect Gaussian rendering
+    # with torch.no_grad():
+    #     pred = render_results["images_pred"].float()
+
+    #     print("\n===== RENDER DEBUG =====")
+    #     print("Gaussian tensor shape:", gaussians.shape)
+    #     print("Prediction shape:", pred.shape)
+
+    #     print(
+    #         "Prediction RGB:",
+    #         "min =", pred.min().item(),
+    #         "max =", pred.max().item(),
+    #         "mean =", pred.mean().item(),
+    #         "std =", pred.std().item(),
+    #     )
+
+    #     print(
+    #         "Available render outputs:",
+    #         list(render_results.keys()),
+    #     )
+
+    #     print(
+    #         "Supervision camera shape:",
+    #         supervision_decoder.cam_view.shape,
+    #     )
+
+    #     print(
+    #         "Camera finite:",
+    #         torch.isfinite(supervision_decoder.cam_view).all().item(),
+    #     )
+
+    #     print("========================\n")
+
+    # # ===== ALPHA DEBUG =====
+    # with torch.no_grad():
+    #     alpha = render_results["alphas_pred"].float()
+    #     depth = render_results["depths_pred"].float()
+
+    #     print("\n===== ALPHA DEBUG =====")
+    #     print("Alpha shape:", alpha.shape)
+
+    #     print(
+    #         "Alpha:",
+    #         "min =", alpha.min().item(),
+    #         "max =", alpha.max().item(),
+    #         "mean =", alpha.mean().item(),
+    #         "std =", alpha.std().item(),
+    #     )
+
+    #     print(
+    #         "Alpha coverage > 0.01:",
+    #         (alpha > 0.01).float().mean().item(),
+    #     )
+
+    #     print(
+    #         "Alpha coverage > 0.1:",
+    #         (alpha > 0.1).float().mean().item(),
+    #     )
+
+    #     print(
+    #         "Depth:",
+    #         "min =", depth.min().item(),
+    #         "max =", depth.max().item(),
+    #         "mean =", depth.mean().item(),
+    #     )
+
+    #     print("=======================\n")
+    # # ===== END DEBUG =====
+
     return DualBranchForwardOutput(
         self_calibration=self_calibration,
         latent=latent,

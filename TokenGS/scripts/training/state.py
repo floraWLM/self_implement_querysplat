@@ -157,10 +157,13 @@ def save_training_checkpoint(
         "scheduler": scheduler.state_dict(),
         "ema": ema.state_dict(),
         "torch_rng_state": torch.get_rng_state(),
-        "cuda_rng_state_all": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else [],
+        "cuda_rng_state": torch.cuda.get_rng_state() if torch.cuda.is_available() else None,
         "extra": extra or {},
     }
-    torch.save(payload, temporary)
+    with temporary.open("wb") as stream:
+        torch.save(payload, stream)
+        stream.flush()
+        os.fsync(stream.fileno())
     os.replace(temporary, path)
 
 
@@ -170,6 +173,8 @@ def load_training_checkpoint(
     optimizer: torch.optim.Optimizer,
     scheduler: torch.optim.lr_scheduler.LRScheduler,
     ema: ExponentialMovingAverage,
+    *,
+    restore_rng: bool = True,
 ) -> tuple[int, dict[str, Any]]:
     path = Path(path)
     if not path.is_file():
@@ -193,7 +198,12 @@ def load_training_checkpoint(
     optimizer.load_state_dict(payload["optimizer"])
     scheduler.load_state_dict(payload["scheduler"])
     ema.load_state_dict(payload["ema"], model)
-    torch.set_rng_state(payload["torch_rng_state"])
-    if torch.cuda.is_available() and payload["cuda_rng_state_all"]:
-        torch.cuda.set_rng_state_all(payload["cuda_rng_state_all"])
+    if restore_rng:
+        torch.set_rng_state(payload["torch_rng_state"])
+        if torch.cuda.is_available():
+            if payload.get("cuda_rng_state") is not None:
+                torch.cuda.set_rng_state(payload["cuda_rng_state"])
+            elif payload.get("cuda_rng_state_all"):
+                # Legacy payload: restore only this process's device.
+                torch.cuda.set_rng_state(payload["cuda_rng_state_all"][torch.cuda.current_device()])
     return int(payload["global_step"]), dict(payload.get("extra", {}))
